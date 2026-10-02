@@ -326,6 +326,7 @@ function texteRiche(el, texte) {
 
 async function demander(question) {
   if (mode === "demo") return repondreDemo(question);
+  if (!connexionPossible()) { definirMode("demo", "Version en ligne : la connexion à n8n n'est possible qu'en local."); return repondreDemo(question); }
   const zone = $("reponse");
   zone.setAttribute("aria-busy", "true");
   $("envoyer").disabled = true; $("envoyer").textContent = "Recherche…";
@@ -446,8 +447,13 @@ async function copierTexte(texte, bouton) {
   setTimeout(() => { bouton.textContent = "Copier"; bouton.dataset.copie = "false"; }, 1800);
 }
 
+/* Une page publiée en HTTPS (ex. GitHub Pages) ne peut pas joindre un service local en HTTP :
+   dans ce cas, aucune connexion n'est tentée et la console reste en démo. */
+const connexionPossible = () => !(location.protocol === "https:" && adresse.startsWith("http:"));
+
 /* À l'ouverture, sans service joignable, la console passe en démo hors ligne. */
 async function verifierService() {
+  if (!connexionPossible()) { definirMode("demo", "Version en ligne : la connexion à n8n n'est possible qu'en local."); return; }
   try {
     const ctrl = new AbortController(); const minuterie = setTimeout(() => ctrl.abort(), 3000);
     // Requête GET opaque : réussit dès que le serveur répond (quel que soit le code), échoue s'il est injoignable.

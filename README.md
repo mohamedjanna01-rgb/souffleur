@@ -1,4 +1,8 @@
-> **In English** – *Souffleur* is a retrieval-augmented assistant for call-center agents, built with n8n, Supabase (pgvector) and Gemini. During a call, the agent types the customer's question and gets, in about 3 seconds, a structured answer drawn only from internal documentation: short answer, steps, a ready-to-say sentence, pitfalls, escalation and sources. When the documentation does not cover a question, it says so and escalates instead of guessing. Four prompt versions were compared on 43 test questions plus 10 unseen ones, with code-based checks, an LLM judge from another model family and a review by a former call-center agent. The company and its documentation are fictional.
+### [Essayer la démo](https://mohamedjanna01-rgb.github.io/souffleur/ui/index.html?demo=1)
+
+Console en démo hors ligne, sans installation : 6 vraies réponses de Souffleur, relues par un expert métier.
+
+> **In English** – *Souffleur* is a retrieval-augmented assistant for call-center agents, built with n8n, Supabase (pgvector) and Gemini. During a call, the agent types the customer's question and gets, in about 3 seconds, a structured answer drawn only from internal documentation: short answer, steps, a ready-to-say sentence, pitfalls, escalation and sources. When the documentation does not cover a question, it says so and escalates instead of guessing. Four prompt versions were compared on 43 test questions plus 10 unseen ones, with code-based checks, an LLM judge from another model family and a review by a former call-center agent. The company and its documentation are fictional. [Try the demo](https://mohamedjanna01-rgb.github.io/souffleur/ui/index.html?demo=1).
 
 # Souffleur
 
@@ -31,7 +35,7 @@ Le conseiller pose la question comme à un collègue expérimenté. Souffleur ch
 
 - **Il n'invente pas** : si l'information n'est pas dans la documentation, il le dit et oriente vers le superviseur.
 - **Trois points d'entrée** : la console conseiller ([`ui/index.html`](ui/index.html)), le chat intégré à n8n, et une API JSON.
-- **Testable sans rien installer** : ouvrir `ui/index.html?demo=1` affiche la console en **démo hors ligne**, avec 6 vraies réponses enregistrées et relues par un expert métier.
+- **Testable sans rien installer** : la [démo en ligne](https://mohamedjanna01-rgb.github.io/souffleur/ui/index.html?demo=1) affiche la console en **démo hors ligne**, avec 6 vraies réponses enregistrées et relues par un expert métier.
 
 ---
 
@@ -129,11 +133,11 @@ flowchart LR
 | **Interface** | Une page HTML sans framework ni compilation (mode clair et sombre, mobile, démo hors ligne) |
 | **Coût** | 0 € (offres gratuites Gemini et Supabase) |
 
-Détails : [ARCHITECTURE.md](ARCHITECTURE.md) · Journal des 33 décisions techniques : [DECISIONS.md](DECISIONS.md)
+Détails : [ARCHITECTURE.md](ARCHITECTURE.md) · Journal des 34 décisions techniques : [DECISIONS.md](DECISIONS.md)
 
 ### Lancer le projet
 
-Guide pas à pas (environ 45 min, uniquement des offres gratuites) : **[SETUP.md](SETUP.md)**. Pour voir la console sans rien installer : ouvrir `ui/index.html?demo=1` dans un navigateur.
+Guide pas à pas (environ 45 min, uniquement des offres gratuites) : **[SETUP.md](SETUP.md)**. Pour voir la console sans rien installer : [démo en ligne](https://mohamedjanna01-rgb.github.io/souffleur/ui/index.html?demo=1), ou `ui/index.html?demo=1` ouvert localement dans un navigateur.
 
 ```
 assistant-conseiller/
@@ -144,6 +148,7 @@ assistant-conseiller/
 ├── scripts/         génération des workflows, découpage, post-traitement, structuration, analyses (+ tests)
 ├── supabase/        schéma SQL (table, recherche, RLS)
 ├── evaluations/     jeux de questions, résultats bruts, analyses et relecture experte
+├── index.html       redirection vers la démo (GitHub Pages)
 ├── ARCHITECTURE.md  architecture détaillée
 ├── DECISIONS.md     journal des décisions techniques
 └── SETUP.md         installation
