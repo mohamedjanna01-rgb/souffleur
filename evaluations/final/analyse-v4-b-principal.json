@@ -1,0 +1,98 @@
+{
+  "global": {
+    "n": 43,
+    "justesse": "72,1 %",
+    "justesse_max": 20,
+    "fidelite": "93 %",
+    "source_ok": "100 %",
+    "recherche_ok": "100 %",
+    "rappel_regles": "68,6 %",
+    "format_ok": "100 %",
+    "bons_refus": "87,5 %",
+    "refus_a_tort": "0 %",
+    "chiffres_non_retrouves": 0,
+    "juge_illisible": 0
+  },
+  "par_categorie": {
+    "repondable": {
+      "n": 25,
+      "justesse": "68 %",
+      "justesse_max": 9,
+      "fidelite": "100 %",
+      "source_ok": "100 %",
+      "recherche_ok": "100 %",
+      "rappel_regles": "68,7 %",
+      "format_ok": "100 %",
+      "bons_refus": "–",
+      "refus_a_tort": "0 %",
+      "chiffres_non_retrouves": 0,
+      "juge_illisible": 0
+    },
+    "piege": {
+      "n": 10,
+      "justesse": "70 %",
+      "justesse_max": 4,
+      "fidelite": "80 %",
+      "source_ok": "100 %",
+      "recherche_ok": "100 %",
+      "rappel_regles": "68,3 %",
+      "format_ok": "100 %",
+      "bons_refus": "–",
+      "refus_a_tort": "0 %",
+      "chiffres_non_retrouves": 0,
+      "juge_illisible": 0
+    },
+    "hors_doc": {
+      "n": 8,
+      "justesse": "87,5 %",
+      "justesse_max": 7,
+      "fidelite": "87,5 %",
+      "source_ok": "–",
+      "recherche_ok": "–",
+      "rappel_regles": "–",
+      "format_ok": "100 %",
+      "bons_refus": "87,5 %",
+      "refus_a_tort": "–",
+      "chiffres_non_retrouves": 0,
+      "juge_illisible": 0
+    }
+  },
+  "latence_ms": {
+    "mediane": 3552,
+    "p95": 12285,
+    "max": 16595
+  },
+  "concision": {
+    "mots_reponse_mediane": 167,
+    "mots_reponse_max": 280,
+    "mots_reponse_courte_mediane": 25,
+    "reponses_courtes_de_plus_de_30_mots": 15
+  },
+  "titres_corriges_automatiquement": 0,
+  "echecs": [
+    {
+      "id": "Q21",
+      "justesse": 1,
+      "fidelite": 0,
+      "refus_ok": 1,
+      "commentaire_juge": "L'assistant omet de préciser que le changement d'offre vers un contrat Pro doit être effectué par le Service Kalyo Pro, ce qui rend l'affirmation 'Escalade : Aucune' erronée par rapport au contexte.",
+      "affirmations_non_sourcees": "Escalade : Aucune"
+    },
+    {
+      "id": "P08",
+      "justesse": 1,
+      "fidelite": 0,
+      "refus_ok": 1,
+      "commentaire_juge": "L'assistant répond correctement à la question principale, mais il manque l'information cruciale sur l'escalade vers le Service Fraude & Sécurité et affirme à tort qu'il n'y a aucune escalade.",
+      "affirmations_non_sourcees": "Aucune escalade"
+    },
+    {
+      "id": "H01",
+      "justesse": 0,
+      "fidelite": 0,
+      "refus_ok": 0,
+      "commentaire_juge": "L'assistant n'a pas effectué l'escalade demandée et a affirmé l'absence de consoles au client alors que la documentation ne fait que ne pas en mentionner.",
+      "affirmations_non_sourcees": "Nos offres Box et nos options n'incluent pas de console de jeux | nous proposons uniquement des équipements internet et TV"
+    }
+  ]
+}

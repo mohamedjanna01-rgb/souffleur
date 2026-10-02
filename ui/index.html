@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Souffleur – console conseiller</title>
+<meta name="description" content="Souffleur : l'assistant qui souffle la bonne réponse au conseiller, en 3 secondes. Démonstration avec une entreprise et une documentation fictives.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --fond: #f6f7f8;
+  --surface: #ffffff;
+  --texte: #1b1f23;
+  --texte-2: #5d6671;
+  --ligne: #e3e6ea;
+  --ligne-forte: #c8ced5;
+  --accent: #0f5c64;
+  --accent-texte: #ffffff;
+  --accent-doux: #e6f0f1;
+  --vigilance-texte: #8a4306;
+  --vigilance-fond: #fdf6ee;
+  --vigilance-trait: #e0a865;
+  --rayon: 8px;
+  --sans: "Public Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --serif: "Newsreader", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fond: #15181b; --surface: #1c2024; --texte: #e5e8eb; --texte-2: #9ba4ae;
+    --ligne: #2a3035; --ligne-forte: #3b434a; --accent: #6db4bb; --accent-texte: #0d1416;
+    --accent-doux: #1b2f32; --vigilance-texte: #efb36d; --vigilance-fond: #241d15; --vigilance-trait: #8a5c28;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --fond: #15181b; --surface: #1c2024; --texte: #e5e8eb; --texte-2: #9ba4ae;
+  --ligne: #2a3035; --ligne-forte: #3b434a; --accent: #6db4bb; --accent-texte: #0d1416;
+  --accent-doux: #1b2f32; --vigilance-texte: #efb36d; --vigilance-fond: #241d15; --vigilance-trait: #8a5c28;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--fond); color: var(--texte); font: 400 16px/1.55 var(--sans); overflow-wrap: anywhere; }
+button, textarea, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.masque { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.colonne { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+
+/* En-tête */
+.entete { background: var(--surface); border-bottom: 1px solid var(--ligne); }
+.entete .colonne { display: flex; align-items: center; gap: 14px; min-height: 60px; }
+.marque { display: flex; align-items: center; gap: 12px; margin-right: auto; color: var(--accent); min-width: 0; }
+.operateur { font-weight: 600; font-size: 15px; color: var(--texte); letter-spacing: -0.005em; white-space: nowrap; margin-left: -2px; }
+.marque .logo { display: block; height: 28px; width: auto; flex: none; }
+.separateur { width: 1px; height: 22px; background: var(--ligne-forte); }
+.outil { font: 500 22px/1 var(--serif); color: var(--texte); letter-spacing: -0.01em; white-space: nowrap; }
+.statut { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--texte-2); }
+.statut::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.statut[data-mode="demo"]::before { background: var(--vigilance-trait); }
+.icone { width: 36px; height: 36px; display: grid; place-items: center; border: 0; background: none; border-radius: var(--rayon); color: var(--texte-2); cursor: pointer; }
+.icone:hover { background: var(--fond); color: var(--texte); }
+.icone svg { width: 18px; height: 18px; }
+
+/* Bandeau démo */
+.bandeau-demo { background: var(--vigilance-fond); color: var(--vigilance-texte); font-size: 14px; border-bottom: 1px solid var(--ligne); }
+.bandeau-demo .colonne { display: flex; align-items: center; gap: 16px; padding-top: 10px; padding-bottom: 10px; }
+.bandeau-demo .texte-bandeau { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bandeau-demo strong { font-weight: 600; }
+.bandeau-demo button { flex: none; margin-left: auto; white-space: nowrap; background: none; border: 0; color: inherit; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; font-size: 14px; padding: 0; }
+
+/* Question */
+.zone-question { padding: 40px 0 0; }
+.formulaire { display: flex; gap: 10px; align-items: flex-end; background: var(--surface); border: 1px solid var(--ligne-forte); border-radius: var(--rayon); padding: 8px 8px 8px 16px; }
+.formulaire:focus-within { border-color: var(--accent); }
+.formulaire textarea {
+  flex: 1; min-width: 0; resize: none; border: 0; background: none; outline: none;
+  font-size: 17px; line-height: 1.45; padding: 7px 0; max-height: 9em;
+}
+.formulaire textarea::placeholder { color: var(--texte-2); }
+.bouton-principal { flex: none; height: 40px; padding: 0 20px; border: 0; border-radius: 6px; background: var(--accent); color: var(--accent-texte); font-weight: 600; cursor: pointer; }
+.bouton-principal:disabled { opacity: .6; cursor: progress; }
+.exemples { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; font-size: 14px; color: var(--texte-2); }
+.exemple { border: 1px solid var(--ligne); background: none; border-radius: 999px; padding: 4px 12px; font-size: 14px; color: var(--texte); cursor: pointer; }
+.exemple:hover { border-color: var(--accent); color: var(--accent); }
+.lien { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; font-size: 14px; text-align: left; }
+
+/* Réponse */
+.zone-reponse { padding: 40px 0 64px; min-height: 45vh; display: grid; gap: 36px; align-content: start; }
+.vide { color: var(--texte-2); }
+.vide p { margin: 0 0 6px; }
+.chargement { color: var(--texte-2); }
+.chargement .barre { height: 2px; background: var(--ligne); overflow: hidden; margin-top: 14px; max-width: 320px; }
+.chargement .barre::after { content: ""; display: block; height: 100%; width: 35%; background: var(--accent); animation: avance 1.1s ease-in-out infinite; }
+@keyframes avance { from { transform: translateX(-100%); } to { transform: translateX(300%); } }
+.erreur { background: var(--vigilance-fond); color: var(--vigilance-texte); border-radius: var(--rayon); padding: 14px 16px; }
+
+.titre-bloc { font-size: 14px; font-weight: 600; color: var(--texte-2); margin: 0 0 12px; }
+
+.courte { background: var(--surface); border-radius: var(--rayon); padding: 22px 24px 24px; box-shadow: inset 3px 0 0 var(--accent); }
+.courte[data-refus="true"] { box-shadow: inset 3px 0 0 var(--texte-2); }
+.courte-tete { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.courte-tete .titre-bloc { margin: 0 auto 0 0; }
+.courte p { margin: 0; font-size: 21px; line-height: 1.45; font-weight: 500; }
+.badge { font-size: 13px; font-weight: 600; border-radius: 999px; padding: 2px 10px; background: var(--accent-doux); color: var(--accent); }
+.badge-neutre { background: var(--fond); color: var(--texte-2); }
+.temps { font-size: 13px; color: var(--texte-2); font-variant-numeric: tabular-nums; }
+
+/* La réplique */
+.replique { background: var(--accent-doux); border-radius: var(--rayon); padding: 22px 24px 24px; }
+.replique-tete { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.replique-tete .titre-bloc { margin: 0; color: var(--accent); }
+.replique blockquote { margin: 0; font: 400 22px/1.5 var(--serif); }
+.copier { background: var(--surface); border: 0; color: var(--accent); border-radius: 6px; padding: 5px 12px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.copier[data-copie="true"] { background: var(--accent); color: var(--accent-texte); }
+
+.etapes { list-style: none; margin: 0; padding: 0; counter-reset: etape; }
+.etapes > li { counter-increment: etape; padding: 10px 0; border-top: 1px solid var(--ligne); }
+.etapes > li:first-child { border-top: 0; padding-top: 2px; }
+.etapes label { display: grid; grid-template-columns: 20px 22px 1fr; gap: 8px; align-items: start; cursor: pointer; }
+.etapes label::before { content: counter(etape) "."; color: var(--texte-2); font-variant-numeric: tabular-nums; grid-column: 2; grid-row: 1; }
+.etapes input { grid-column: 1; grid-row: 1; margin: 4px 0 0; width: 16px; height: 16px; accent-color: var(--accent); }
+.etapes label > span { grid-column: 3; grid-row: 1; }
+.etapes input:checked ~ span { color: var(--texte-2); text-decoration: line-through; text-decoration-color: var(--ligne-forte); }
+.sous-etapes { margin: 6px 0 0 50px; padding: 0; list-style: none; }
+.sous-etapes li { position: relative; padding: 3px 0 3px 16px; }
+.sous-etapes li::before { content: ""; position: absolute; left: 2px; top: 15px; width: 6px; height: 1px; background: var(--texte-2); }
+
+.vigilance { background: var(--vigilance-fond); border-left: 3px solid var(--vigilance-trait); border-radius: 0 var(--rayon) var(--rayon) 0; padding: 12px 16px; font-size: 15px; }
+.vigilance strong { color: var(--vigilance-texte); font-weight: 600; }
+.vigilance ul { margin: 6px 0 0; padding-left: 18px; }
+.vigilance li { margin: 2px 0; }
+
+.sources { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 14px; }
+.sources > span { color: var(--texte-2); margin-right: 2px; }
+.source { display: inline-flex; gap: 6px; align-items: baseline; border: 1px solid var(--ligne); border-radius: 999px; padding: 3px 12px; }
+.source b { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.expert { font-size: 14px; color: var(--texte-2); margin: -20px 0 0; }
+.expert strong { color: var(--texte); font-weight: 600; }
+
+.details { border-top: 1px solid var(--ligne); padding-top: 14px; font-size: 14px; color: var(--texte-2); }
+.details summary { cursor: pointer; color: var(--texte); width: fit-content; }
+.details dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 14px 0 0; }
+.details dt { color: var(--texte-2); }
+.details dd { margin: 0; color: var(--texte); }
+
+.liste-demo { margin: 10px 0 0; padding-left: 18px; }
+.liste-demo li { margin: 6px 0; }
+
+.pied { color: var(--texte-2); font-size: 13px; padding: 20px 0 32px; border-top: 1px solid var(--ligne); }
+.pied .colonne { display: grid; gap: 10px; }
+.pied p { margin: 0; }
+.pied details summary { cursor: pointer; width: fit-content; }
+.pied label { display: block; margin: 10px 0 6px; }
+.pied input { width: 100%; max-width: 420px; padding: 7px 10px; border: 1px solid var(--ligne-forte); border-radius: 6px; background: var(--surface); font-size: 13px; }
+
+@media (max-width: 560px) {
+  .colonne { padding: 0 16px; }
+  .bandeau-demo .colonne { flex-wrap: wrap; gap: 6px 16px; }
+  .bandeau-demo .texte-bandeau { white-space: normal; flex-basis: 100%; }
+  .marque { gap: 10px; }
+  .operateur { font-size: 14px; }
+  .outil { font-size: 19px; }
+  .statut { font-size: 0; gap: 0; }
+  .zone-question { padding-top: 24px; }
+  .formulaire { flex-direction: column; align-items: stretch; padding: 8px 8px 8px 12px; }
+  .bouton-principal { width: 100%; }
+  .courte, .replique { padding: 18px; }
+  .courte p { font-size: 19px; }
+  .replique blockquote { font-size: 20px; }
+  .sous-etapes { margin-left: 30px; }
+  .details dl { grid-template-columns: 1fr; gap: 2px; }
+  .details dd { margin-bottom: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chargement .barre::after { animation: none; width: 100%; opacity: .5; }
+}
+</style>
+</head>
+<body>
+<header class="entete">
+  <div class="colonne">
+    <div class="marque">
+      <svg class="logo" viewBox="5.4 1.9 15.2 28" role="img" aria-label="Kalyo Télécom" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+        <title>Kalyo Télécom</title>
+        <path d="M7 3.5v25"/>
+        <path d="M9.4 12.4a7 7 0 0 1 4.2 4.2"/>
+        <path d="M11.1 7.7a12 12 0 0 1 7.2 7.2"/>
+        <path d="M9.6 21.2 19 28.5"/>
+      </svg>
+      <span class="operateur" aria-hidden="true">Kalyo Télécom</span>
+      <span class="separateur" aria-hidden="true"></span>
+      <span class="outil">Souffleur</span>
+    </div>
+    <span class="statut" id="statut" data-mode="ligne" role="status">En ligne</span>
+    <button class="icone" id="theme" type="button" aria-label="Passer en thème sombre">
+      <svg id="icone-theme" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></svg>
+    </button>
+  </div>
+</header>
+
+<div class="bandeau-demo" id="bandeau-demo" hidden>
+  <div class="colonne">
+    <span class="texte-bandeau"><strong>Démo hors ligne – réponses enregistrées.</strong> <span id="bandeau-detail">Relues par un expert métier.</span></span>
+    <button type="button" id="reessayer">Réessayer la connexion</button>
+  </div>
+</div>
+
+<main class="colonne">
+  <section class="zone-question" aria-label="Question">
+    <form class="formulaire" id="formulaire">
+      <label class="masque" for="question">Question du client</label>
+      <textarea id="question" rows="1" autocomplete="off" placeholder="Posez la question du client, comme à un collègue expérimenté" required></textarea>
+      <button class="bouton-principal" id="envoyer" type="submit">Demander</button>
+    </form>
+    <div class="exemples" id="exemples"></div>
+  </section>
+
+  <section class="zone-reponse" id="reponse" aria-live="polite" aria-busy="false">
+    <div class="vide">
+      <p>Souffleur répond à partir de la documentation interne uniquement, en citant ses sources.</p>
+      <p>Si l'information n'y figure pas, il le dit et indique vers qui escalader.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="pied">
+  <div class="colonne">
+    <p>Kalyo Télécom est une entreprise fictive : documentation, offres et procédures sont inventées pour cette démonstration.</p>
+    <details>
+      <summary>Paramètres de connexion</summary>
+      <label for="adresse">Adresse du service Souffleur (webhook n8n)</label>
+      <input id="adresse" type="url" spellcheck="false">
+    </details>
+  </div>
+</footer>
+
+<script>
+const DEMO = [{"ok":true,"question":"Pour valider sa commande, ma cliente veut me lire le code qu'elle vient de recevoir de sa banque par SMS. Je le prends ?","refus":false,"reponse_courte":"Non, il ne faut pas prendre un code reçu de la banque du client, car le conseiller ne doit jamais demander un code bancaire ou un code reçu par SMS autre que le Code Kalyo déclenché par lui-même.","etapes":[{"texte":"Informer le client que Kalyo ne demande jamais de code bancaire ou reçu de la banque.","sous":[]},{"texte":"Expliquer que seul le Code Kalyo déclenché par le conseiller depuis Orbite peut être demandé.","sous":[]},{"texte":"Procéder si besoin à l'envoi d'un Code Kalyo ou utiliser la procédure de validation adaptée (application Kalyo & Moi ou validation par SMS).","sous":[]}],"a_dire":"« Pour votre sécurité, je ne peux pas accepter ce code : je ne vous demande jamais de code bancaire ou de code reçu de votre banque. Si vous devez valider une commande avec nous, nous utilisons exclusivement un Code Kalyo que je déclenche moi-même depuis mon système. »","vigilance":["Ne jamais demander un code bancaire, un numéro de carte, ou un code reçu par SMS de la banque."],"escalade":{"texte":"Service Fraude & Sécurité en transfert chaud si le client a déjà communiqué des informations sensibles à un tiers.","necessaire":true,"libelle":"Service Fraude & Sécurité"},"sources":[{"doc_id":"DOC-12","titre":"Accompagner un client peu à l'aise avec la technologie","titre_court":"Clients peu à l'aise avec le numérique","regles":["ACC-03","ACC-04"],"aucune_source":false}],"documents_consultes":[{"doc_id":"DOC-12","titre":"Accompagner un client peu à l'aise avec la technologie"},{"doc_id":"DOC-15","titre":"Méthode d'appel entrant et gestion d'un client mécontent"}],"duree_ms":3015,"version":"assistant-v1+code","reponse_markdown":"### Réponse courte\nNon, il ne faut pas prendre un code reçu de la banque du client, car le conseiller ne doit jamais demander un code bancaire ou un code reçu par SMS autre que le Code Kalyo déclenché par lui-même.\n\n### Étapes à suivre\n1. Informer le client que Kalyo ne demande jamais de code bancaire ou reçu de la banque.\n2. Expliquer que seul le Code Kalyo déclenché par le conseiller depuis Orbite peut être demandé.\n3. Procéder si besoin à l'envoi d'un Code Kalyo ou utiliser la procédure de validation adaptée (application Kalyo & Moi ou validation par SMS).\n\n### À dire au client\n« Pour votre sécurité, je ne peux pas accepter ce code : je ne vous demande jamais de code bancaire ou de code reçu de votre banque. Si vous devez valider une commande avec nous, nous utilisons exclusivement un Code Kalyo que je déclenche moi-même depuis mon système. »\n\n### Vigilance\nNe jamais demander un code bancaire, un numéro de carte, ou un code reçu par SMS de la banque.\n\n### Escalade\nService Fraude & Sécurité en transfert chaud si le client a déjà communiqué des informations sensibles à un tiers.\n\n### Source\n- DOC-12 – Accompagner un client peu à l'aise avec la technologie – [ACC-03], [ACC-04]","relecture":{"ref":"R05","note":"2/2","usage":"utilisable telle quelle","commentaire":"Réponse complète et sûre : refus clair du code bancaire, rappel du seul Code Kalyo autorisé, transfert au Service Fraude prévu si la cliente a déjà donné des informations. Phrase rassurante, utilisable telle quelle."},"libelle":"Code bancaire de la cliente"},{"ok":true,"question":"Mon client revient de Suisse avec 45 € de data facturée, il pensait que c'était inclus comme dans le reste de l'Europe. C'est normal ?","refus":false,"reponse_courte":"Oui, c'est normal car la Suisse n'est pas dans l'Union européenne mais en Zone 1, et ses tarifs ne sont pas inclus de la même manière dans tous les forfaits.","etapes":[{"texte":"Expliquer au client que la Suisse fait partie de la Zone 1 et non de la Zone UE.","sous":[]},{"texte":"Vérifier si le client dispose du forfait Kalyo Mobile 300 Go 5G (qui inclut 10 Go en Zone 1) ou d'un autre forfait (tarifs à l'usage).","sous":[]},{"texte":"Proposer d'activer le blocage du hors forfait gratuitement et conseiller un Pass Voyage pour un prochain voyage.","sous":[]}],"a_dire":"« Je comprends votre surprise en voyant ce montant. La Suisse ne fait pas partie de l'Union européenne pour les tarifs mobiles : c'est pour cela que votre forfait ne l'incluait pas. Pour votre prochain voyage, je vous conseille d'activer un Pass Voyage avant de partir. Et si vous le souhaitez, j'active dès maintenant le blocage du hors forfait, c'est gratuit. »","vigilance":["Ne pas promettre l'annulation totale du hors forfait : le geste est limité à 50 % et plafonné à 15 € pour le conseiller N1."],"escalade":{"texte":"Aucune.","necessaire":false,"libelle":""},"sources":[{"doc_id":"DOC-06","titre":"Facturation – Hors forfait et consommations à l'étranger","titre_court":"Hors forfait et étranger","regles":["CONSO-04","CONSO-05","CONSO-08","CONSO-09","CONSO-10"],"aucune_source":false}],"documents_consultes":[{"doc_id":"DOC-06","titre":"Facturation – Hors forfait et consommations à l'étranger"}],"duree_ms":3783,"version":"assistant-v1+code","reponse_markdown":"### Réponse courte\nOui, c'est normal car la Suisse n'est pas dans l'Union européenne mais en Zone 1, et ses tarifs ne sont pas inclus de la même manière dans tous les forfaits.\n\n### Étapes à suivre\n1. Expliquer au client que la Suisse fait partie de la Zone 1 et non de la Zone UE.\n2. Vérifier si le client dispose du forfait Kalyo Mobile 300 Go 5G (qui inclut 10 Go en Zone 1) ou d'un autre forfait (tarifs à l'usage).\n3. Proposer d'activer le blocage du hors forfait gratuitement et conseiller un Pass Voyage pour un prochain voyage.\n\n### À dire au client\n« Je comprends votre surprise en voyant ce montant. La Suisse ne fait pas partie de l'Union européenne pour les tarifs mobiles : c'est pour cela que votre forfait ne l'incluait pas. Pour votre prochain voyage, je vous conseille d'activer un Pass Voyage avant de partir. Et si vous le souhaitez, j'active dès maintenant le blocage du hors forfait, c'est gratuit. »\n\n### Vigilance\nNe pas promettre l'annulation totale du hors forfait : le geste est limité à 50 % et plafonné à 15 € pour le conseiller N1.\n\n### Escalade\nAucune.\n\n### Source\n- DOC-06 – Facturation – Hors forfait et consommations à l'étranger – [CONSO-04], [CONSO-05], [CONSO-08], [CONSO-09], [CONSO-10]","relecture":{"ref":"R03","note":"2/2","usage":"utilisable avec retouches","commentaire":"Explication juste et solutions utiles (blocage, Pass Voyage). Pas de geste proposé, ce qui est correct puisque le client ne le réclame pas, contrairement à ce qu'attend le jeu de test. Petite supposition : la phrase affirme que le forfait n'incluait pas la Suisse avant de l'avoir vérifié."},"libelle":"Data facturée en Suisse"},{"ok":true,"question":"La fille d'un client décédé appelle pour fermer ses lignes. Quelle est la procédure ?","refus":true,"reponse_courte":"Information non trouvée dans la documentation. La procédure de fermeture de lignes pour cause de décès n'est pas précisée.","etapes":[{"texte":"Ne pas improviser de réponse.","sous":[]},{"texte":"Mettre le client en attente ou lui proposer un rappel.","sous":[]},{"texte":"Demander l'aide du superviseur.","sous":[]}],"a_dire":"« Je préfère vérifier cette information plutôt que de vous donner une réponse inexacte. Je me renseigne et je reviens vers vous. »","vigilance":["Ne donner aucun montant, délai ou engagement qui ne figure pas dans la documentation."],"escalade":{"texte":"Superviseur, en transfert chaud ou pour avis pendant une mise en attente.","necessaire":true,"libelle":"Superviseur"},"sources":[{"doc_id":"DOC-14","titre":"Règles d'escalade et de transfert","titre_court":"Escalade et transferts","regles":["ESC-04"],"aucune_source":true}],"documents_consultes":[{"doc_id":"DOC-11","titre":"Clients avec plusieurs lignes ou plusieurs box, et clients professionnels"},{"doc_id":"DOC-14","titre":"Règles d'escalade et de transfert"}],"duree_ms":2585,"version":"assistant-v1+code","reponse_markdown":"### Réponse courte\nInformation non trouvée dans la documentation. La procédure de fermeture de lignes pour cause de décès n'est pas précisée.\n\n### Étapes à suivre\n1. Ne pas improviser de réponse.\n2. Mettre le client en attente ou lui proposer un rappel.\n3. Demander l'aide du superviseur.\n\n### À dire au client\n« Je préfère vérifier cette information plutôt que de vous donner une réponse inexacte. Je me renseigne et je reviens vers vous. »\n\n### Vigilance\nNe donner aucun montant, délai ou engagement qui ne figure pas dans la documentation.\n\n### Escalade\nSuperviseur, en transfert chaud ou pour avis pendant une mise en attente.\n\n### Source\n- Aucune source dans la documentation – DOC-14 – [ESC-04]","relecture":{"ref":"R08","note":"2/2","usage":"utilisable avec retouches","commentaire":"Refus correct, rien d'inventé. Mais la phrase au client est la phrase de refus standard, sans aucune condoléance : à adapter avec empathie. Trou dans la documentation : demande d'un certificat de décès pour résilier, ou transfert de l'abonnement au nom d'un proche."},"libelle":"Décès d'un client"},{"ok":true,"question":"Un artisan a une offre Box Particuliers à son nom, sa box est coupée et il exige une réparation sous 8 heures comme les pros. Que lui dire ?","refus":false,"reponse_courte":"Il ne peut pas exiger une réparation sous 8 heures car il a une offre Box Particuliers et non une offre professionnelle. La GTR (garantie de rétablissement) ne s'applique pas aux offres Particuliers.","etapes":[{"texte":"Vérifier le type d'offre du client dans le dossier (offre Box Particuliers).","sous":[]},{"texte":"Rappeler au client que la GTR (délai de 8 heures) est réservée aux contrats professionnels.","sous":[]},{"texte":"Réaliser le diagnostic de premier niveau (voyant, redémarrage).","sous":[]}],"a_dire":"« Je comprends que cette coupure soit très pénalisante pour votre activité, mais la garantie d'intervention sous 8 heures est réservée aux offres professionnelles. Votre abonnement actuel étant un contrat Particuliers, nous ne pouvons pas appliquer ce délai, mais je procède immédiatement aux vérifications sur votre ligne. »","vigilance":["Ne pas promettre la GTR à un professionnel qui a une offre Particuliers."],"escalade":{"texte":"Aucune.","necessaire":false,"libelle":""},"sources":[{"doc_id":"DOC-11","titre":"Clients avec plusieurs lignes ou plusieurs box, et clients professionnels","titre_court":"Multi-lignes et professionnels","regles":["COMPTE-13"],"aucune_source":false}],"documents_consultes":[{"doc_id":"DOC-11","titre":"Clients avec plusieurs lignes ou plusieurs box, et clients professionnels"},{"doc_id":"DOC-08","titre":"Pannes longues, compensations et procédure de rétention"},{"doc_id":"DOC-02","titre":"Diagnostic à distance – Internet fibre et box"}],"duree_ms":2945,"version":"assistant-v1+code","reponse_markdown":"### Réponse courte\nIl ne peut pas exiger une réparation sous 8 heures car il a une offre Box Particuliers et non une offre professionnelle. La GTR (garantie de rétablissement) ne s'applique pas aux offres Particuliers.\n\n### Étapes à suivre\n1. Vérifier le type d'offre du client dans le dossier (offre Box Particuliers).\n2. Rappeler au client que la GTR (délai de 8 heures) est réservée aux contrats professionnels.\n3. Réaliser le diagnostic de premier niveau (voyant, redémarrage).\n\n### À dire au client\n« Je comprends que cette coupure soit très pénalisante pour votre activité, mais la garantie d'intervention sous 8 heures est réservée aux offres professionnelles. Votre abonnement actuel étant un contrat Particuliers, nous ne pouvons pas appliquer ce délai, mais je procède immédiatement aux vérifications sur votre ligne. »\n\n### Vigilance\nNe pas promettre la GTR à un professionnel qui a une offre Particuliers.\n\n### Escalade\nAucune.\n\n### Source\n- DOC-11 – Clients avec plusieurs lignes ou plusieurs box, et clients professionnels – [COMPTE-13]","relecture":{"ref":"R07","note":"1/2","usage":"utilisable avec retouches","commentaire":"Règle correctement appliquée (client Particulier, pas de garantie sous 8 heures, diagnostic lancé), mais aucune alternative proposée : il fallait indiquer le passage sur une offre Pro via le Service Kalyo Pro."},"libelle":"Artisan sans garantie 8 h"},{"ok":true,"question":"Est-ce que Kalyo propose une offre avec une console de jeux ?","refus":false,"reponse_courte":"La documentation interne ne mentionne aucune offre incluant ou proposant une console de jeux.","etapes":[{"texte":"Consulter le catalogue des offres Box et des options pour vérifier les équipements disponibles (DOC-01).","sous":[]},{"texte":"Constater l'absence de toute console de jeux dans les équipements fournis ou en option (DOC-01).","sous":[]}],"a_dire":"« Actuellement, Kalyo ne propose pas d'offre ou d'option incluant une console de jeux dans son catalogue. »","vigilance":["Ne pas promettre l'arrivée future d'une console de jeux et ne pas confondre les décodeurs TV (Vision 4K / Vision 4K+) avec des consoles de jeux."],"escalade":{"texte":"Aucune.","necessaire":false,"libelle":""},"sources":[{"doc_id":"DOC-01","titre":"Catalogue des offres, équipements et outils internes","titre_court":"Catalogue des offres","regles":["CAT-01","CAT-02","CAT-03","CAT-04","CAT-05","CAT-14","CAT-15"],"aucune_source":false}],"documents_consultes":[{"doc_id":"DOC-01","titre":"Catalogue des offres, équipements et outils internes"},{"doc_id":"DOC-11","titre":"Clients avec plusieurs lignes ou plusieurs box, et clients professionnels"}],"duree_ms":2680,"version":"assistant-v1+code","reponse_markdown":"### Réponse courte\nLa documentation interne ne mentionne aucune offre incluant ou proposant une console de jeux.\n\n### Étapes à suivre\n1. Consulter le catalogue des offres Box et des options pour vérifier les équipements disponibles (DOC-01).\n2. Constater l'absence de toute console de jeux dans les équipements fournis ou en option (DOC-01).\n\n### À dire au client\n« Actuellement, Kalyo ne propose pas d'offre ou d'option incluant une console de jeux dans son catalogue. »\n\n### Vigilance\nNe pas promettre l'arrivée future d'une console de jeux et ne pas confondre les décodeurs TV (Vision 4K / Vision 4K+) avec des consoles de jeux.\n\n### Escalade\nAucune.\n\n### Source\n- DOC-01 – Catalogue des offres, équipements et outils internes – [CAT-01], [CAT-02], [CAT-03], [CAT-04], [CAT-05], [CAT-14], [CAT-15]","relecture":{"ref":"R02","note":"1/2","usage":"utilisable avec retouches","commentaire":"Information juste (offre non commercialisée), mais ne propose aucune alternative : il ne faut jamais laisser le client sur un simple non. Pas d'escalade nécessaire pour ce type de question, contrairement à ce que prévoit le jeu de test."},"libelle":"Offre avec console de jeux"},{"ok":true,"question":"J'ai un client très énervé au téléphone. Comment je gère ?","refus":false,"reponse_courte":"Gérez un client mécontent en appliquant la méthode CALME : laissez-le parler, accueillez son émotion, trouvez le vrai problème, proposez une solution concrète et engagez la conclusion.","etapes":[{"texte":"Laisser le client s'exprimer jusqu'au bout sans l'interrompre (Comprendre).","sous":[]},{"texte":"Accueillir l'émotion avec un ton calme, voix posée et souriante (Accueillir).","sous":[]},{"texte":"Séparer l'émotion des faits pour poser des questions précises (Localiser).","sous":[]},{"texte":"Proposer une solution concrète avec un délai (Mettre en œuvre).","sous":[]},{"texte":"Récapituler, donner une prochaine étape et tracer dans Orbite (Engager et conclure).","sous":[]}],"a_dire":"« Je comprends que ce soit très agaçant, surtout après plusieurs appels. Je suis désolé pour la gêne occasionnée. »","vigilance":["Ne pas couper la parole, ne pas promettre de geste pour calmer le client, et ne jamais critiquer un collègue ou Kalyo."],"escalade":{"texte":"Superviseur, par transfert chaud en cas d'insultes persistantes après avertissement ou de menace d'action en justice.","necessaire":true,"libelle":"Superviseur"},"sources":[{"doc_id":"DOC-15","titre":"Méthode d'appel entrant et gestion d'un client mécontent","titre_court":"Méthode d'appel","regles":["APPEL-11","APPEL-12","APPEL-13"],"aucune_source":false}],"documents_consultes":[{"doc_id":"DOC-15","titre":"Méthode d'appel entrant et gestion d'un client mécontent"}],"duree_ms":3030,"version":"assistant-v1+code","reponse_markdown":"### Réponse courte\nGérez un client mécontent en appliquant la méthode CALME : laissez-le parler, accueillez son émotion, trouvez le vrai problème, proposez une solution concrète et engagez la conclusion.\n\n### Étapes à suivre\n1. Laisser le client s'exprimer jusqu'au bout sans l'interrompre (Comprendre).\n2. Accueillir l'émotion avec un ton calme, voix posée et souriante (Accueillir).\n3. Séparer l'émotion des faits pour poser des questions précises (Localiser).\n4. Proposer une solution concrète avec un délai (Mettre en œuvre).\n5. Récapituler, donner une prochaine étape et tracer dans Orbite (Engager et conclure).\n\n### À dire au client\n« Je comprends que ce soit très agaçant, surtout après plusieurs appels. Je suis désolé pour la gêne occasionnée. »\n\n### Vigilance\nNe pas couper la parole, ne pas promettre de geste pour calmer le client, et ne jamais critiquer un collègue ou Kalyo.\n\n### Escalade\nSuperviseur, par transfert chaud en cas d'insultes persistantes après avertissement ou de menace d'action en justice.\n\n### Source\n- DOC-15 – Méthode d'appel entrant et gestion d'un client mécontent – [APPEL-11], [APPEL-12], [APPEL-13]","relecture":{"ref":"R01","note":"1/2","usage":"utilisable avec retouches","commentaire":"Méthode correcte et bien structurée, mais oublie de rappeler qu'il ne faut jamais dire \"calmez-vous\". La phrase au client suppose à tort plusieurs appels : petite supposition, pas grave, à retoucher."},"libelle":"Client très énervé"}];
+
+const EXEMPLES_EN_LIGNE = [
+  ["Voyant orange fixe sur la box", "Le voyant de la box de mon client est orange fixe, qu'est-ce que je fais ?"],
+  ["Data facturée en Suisse", "Mon client revient de Suisse avec 45 € de data facturée, il pensait que c'était inclus. C'est normal ?"],
+  ["Code bancaire de la cliente", "Pour valider sa commande, ma cliente veut me lire le code qu'elle vient de recevoir de sa banque par SMS. Je le prends ?"],
+];
+const ADRESSE_DEFAUT = "http://localhost:5678/webhook/souffleur";
+const ICONES = {
+  lune: '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
+  soleil: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/>',
+};
+
+const $ = id => document.getElementById(id);
+const lire = (cle, defaut) => { try { return localStorage.getItem(cle) ?? defaut; } catch (e) { return defaut; } };
+const ecrire = (cle, valeur) => { try { localStorage.setItem(cle, valeur); } catch (e) { /* stockage indisponible */ } };
+const cree = (tag, props = {}, enfants = []) => { const e = Object.assign(document.createElement(tag), props); e.append(...enfants); return e; };
+const secondes = ms => (ms / 1000).toFixed(1).replace(".", ",") + " s";
+
+const params = new URLSearchParams(location.search);
+let mode = params.get("demo") === "1" ? "demo" : "ligne";
+let adresse = lire("souffleur.adresse", ADRESSE_DEFAUT);
+$("adresse").value = adresse;
+$("adresse").addEventListener("change", e => { adresse = e.target.value.trim() || ADRESSE_DEFAUT; ecrire("souffleur.adresse", adresse); });
+
+/* Thème */
+const racine = document.documentElement;
+const estSombre = () => racine.dataset.theme ? racine.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+function appliquerTheme(t) {
+  if (t) racine.dataset.theme = t; else delete racine.dataset.theme;
+  const sombre = estSombre();
+  $("icone-theme").innerHTML = sombre ? ICONES.soleil : ICONES.lune; // icônes statiques, définies ci-dessus
+  $("theme").setAttribute("aria-label", sombre ? "Passer en thème clair" : "Passer en thème sombre");
+}
+appliquerTheme(params.get("theme") || lire("souffleur.theme", ""));
+$("theme").addEventListener("click", () => { const t = estSombre() ? "light" : "dark"; ecrire("souffleur.theme", t); appliquerTheme(t); });
+
+/* Mode */
+function definirMode(m, detail) {
+  mode = m;
+  const demo = m === "demo";
+  $("bandeau-demo").hidden = !demo;
+  if (detail) $("bandeau-detail").textContent = detail;
+  $("statut").dataset.mode = demo ? "demo" : "ligne";
+  $("statut").textContent = demo ? "Démo" : "En ligne";
+  afficherExemples();
+}
+$("reessayer").addEventListener("click", async () => { definirMode("ligne"); await verifierService(); });
+
+function afficherExemples() {
+  const zone = $("exemples");
+  zone.replaceChildren();
+  const liste = mode === "demo" ? DEMO.map(d => [d.libelle, d.question]) : EXEMPLES_EN_LIGNE;
+  liste.slice(0, 3).forEach(([libelle, q]) => {
+    const b = cree("button", { type: "button", className: "exemple", textContent: libelle, title: q });
+    b.addEventListener("click", () => { poserQuestion(q); demander(q); });
+    zone.append(b);
+  });
+  if (mode === "demo" && DEMO.length > 3) {
+    const l = cree("button", { type: "button", className: "lien", textContent: `Voir les ${DEMO.length} questions enregistrées` });
+    l.addEventListener("click", () => listerDemo()); zone.append(l);
+  }
+}
+
+/* Barre de question : passe à la ligne et s'agrandit avec le texte */
+const champ = $("question");
+function ajusterHauteur() { champ.style.height = "auto"; champ.style.height = champ.scrollHeight + "px"; }
+function poserQuestion(q) { champ.value = q; ajusterHauteur(); }
+champ.addEventListener("input", ajusterHauteur);
+window.addEventListener("resize", ajusterHauteur);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajusterHauteur);
+window.addEventListener("load", ajusterHauteur);
+champ.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("formulaire").requestSubmit(); } });
+$("formulaire").addEventListener("submit", e => { e.preventDefault(); const q = champ.value.trim(); if (q) demander(q); });
+
+/* Texte avec **gras**, sans injection HTML */
+function texteRiche(el, texte) {
+  String(texte).split(/(\*\*[^*]+\*\*)/g).forEach(part => {
+    if (/^\*\*[^*]+\*\*$/.test(part)) el.append(cree("strong", { textContent: part.slice(2, -2) }));
+    else if (part) el.append(document.createTextNode(part));
+  });
+  return el;
+}
+
+async function demander(question) {
+  if (mode === "demo") return repondreDemo(question);
+  const zone = $("reponse");
+  zone.setAttribute("aria-busy", "true");
+  $("envoyer").disabled = true; $("envoyer").textContent = "Recherche…";
+  zone.replaceChildren(cree("div", { className: "chargement" }, ["Souffleur consulte la documentation…", cree("div", { className: "barre" })]));
+  const debut = performance.now();
+  try {
+    const ctrl = new AbortController(); const minuterie = setTimeout(() => ctrl.abort(), 45000);
+    const r = await fetch(adresse, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question }), signal: ctrl.signal });
+    clearTimeout(minuterie);
+    if (!r.ok) throw new Error(`Le service a répondu avec le code ${r.status}.`);
+    const data = await r.json();
+    if (!data.ok) throw new Error(data.erreur || "Réponse indisponible.");
+    afficher(data, { temps: performance.now() - debut });
+  } catch (err) {
+    if (err instanceof TypeError || err.name === "AbortError") {
+      definirMode("demo", "Service injoignable.");
+      zone.replaceChildren(cree("div", { className: "erreur" }, ["Souffleur n'est pas joignable : passage en démo hors ligne. Choisissez une question enregistrée ci-dessus."]));
+    } else {
+      zone.replaceChildren(cree("div", { className: "erreur" }, [err.message]));
+    }
+  } finally {
+    zone.setAttribute("aria-busy", "false");
+    $("envoyer").disabled = false; $("envoyer").textContent = "Demander";
+  }
+}
+
+function repondreDemo(question) {
+  const n = s => s.toLowerCase().replace(/\s+/g, " ").trim();
+  const trouve = DEMO.find(d => n(d.question) === n(question));
+  if (trouve) return afficher(trouve, { enregistre: true });
+  listerDemo("En démo hors ligne, seules les questions enregistrées ont une réponse.");
+}
+
+function listerDemo(message) {
+  const liste = cree("ol", { className: "liste-demo" });
+  DEMO.forEach(d => {
+    const b = cree("button", { type: "button", className: "lien", textContent: d.question });
+    b.addEventListener("click", () => { poserQuestion(d.question); afficher(d, { enregistre: true }); });
+    liste.append(cree("li", {}, [b]));
+  });
+  $("reponse").replaceChildren(cree("div", { className: "vide" }, [cree("p", { textContent: message || "Questions enregistrées :" }), liste]));
+}
+
+/* Compatibilité : étapes au format texte ou { texte, sous } */
+const versEtape = e => typeof e === "string" ? { texte: e, sous: [] } : e;
+
+function afficher(d, { temps, enregistre } = {}) {
+  const blocs = [];
+
+  // 1. Réponse courte (+ badge d'escalade et temps)
+  const tete = cree("div", { className: "courte-tete" }, [cree("h2", { className: "titre-bloc", textContent: "Réponse courte" })]);
+  if (d.refus) tete.append(cree("span", { className: "badge badge-neutre", textContent: "Hors documentation" }));
+  if (d.escalade && d.escalade.necessaire)
+    tete.append(cree("span", { className: "badge", textContent: `Escalade : ${d.escalade.libelle || d.escalade.texte}`, title: d.escalade.texte }));
+  const duree = enregistre ? d.duree_ms : Math.max(temps || 0, d.duree_ms || 0);
+  tete.append(cree("span", { className: "temps", textContent: secondes(duree), title: enregistre ? "Temps mesuré lors de l'enregistrement" : "Temps de réponse" }));
+  const courte = cree("section", { className: "courte" }, [tete, texteRiche(cree("p"), d.reponse_courte)]);
+  courte.dataset.refus = String(Boolean(d.refus));
+  blocs.push(courte);
+
+  // 2. À dire au client
+  const copier = cree("button", { type: "button", className: "copier", textContent: "Copier" });
+  copier.addEventListener("click", () => copierTexte(d.a_dire.replace(/^«\s*|\s*»$/g, ""), copier));
+  blocs.push(cree("section", { className: "replique" }, [
+    cree("div", { className: "replique-tete" }, [cree("h2", { className: "titre-bloc", textContent: "À dire au client" }), copier]),
+    texteRiche(cree("blockquote"), d.a_dire)]));
+
+  // 3. Étapes (avec sous-points)
+  const liste = cree("ol", { className: "etapes" });
+  d.etapes.map(versEtape).forEach((e, i) => {
+    const id = `etape-${i}`;
+    const li = cree("li", {}, [cree("label", { htmlFor: id }, [cree("input", { type: "checkbox", id }), texteRiche(cree("span"), e.texte)])]);
+    if (e.sous.length) li.append(cree("ul", { className: "sous-etapes" }, e.sous.map(s => texteRiche(cree("li"), s))));
+    liste.append(li);
+  });
+  blocs.push(cree("section", {}, [cree("h2", { className: "titre-bloc", textContent: "Étapes à suivre" }), liste]));
+
+  // 4. Vigilance
+  if (d.vigilance.length) {
+    const contenu = d.vigilance.length === 1
+      ? [cree("strong", { textContent: "Vigilance : " }), texteRiche(cree("span"), d.vigilance[0])]
+      : [cree("strong", { textContent: "Vigilance" }), cree("ul", {}, d.vigilance.map(v => texteRiche(cree("li"), v)))];
+    blocs.push(cree("aside", { className: "vigilance", ariaLabel: "Vigilance" }, contenu));
+  }
+
+  // 5. Sources (une ligne d'étiquettes, titres toujours affichés)
+  const sources = cree("div", { className: "sources" }, [cree("span", { textContent: "Sources" })]);
+  d.sources.forEach(s => sources.append(cree("span", { className: "source", title: s.titre || "" }, [
+    cree("b", { textContent: s.aucune_source ? "Aucune source" : s.doc_id }),
+    document.createTextNode(s.aucune_source ? "règle d'escalade DOC-14" : (s.titre_court || s.titre || ""))])));
+  blocs.push(sources);
+
+  if (enregistre && d.relecture)
+    blocs.push(cree("p", { className: "expert" }, ["Relue par un expert métier : ", cree("strong", { textContent: `${d.relecture.note}, ${d.relecture.usage}` }), "."]));
+
+  // 6. Détails (repliés)
+  const lignes = [];
+  const ajoute = (terme, valeur) => { if (valeur) lignes.push(cree("dt", { textContent: terme }), cree("dd", { textContent: valeur })); };
+  if (d.escalade && d.escalade.necessaire) ajoute("Escalade", d.escalade.texte);
+  ajoute("Règles citées", d.sources.filter(s => s.regles && s.regles.length).map(s => `${s.doc_id} : ${s.regles.join(", ")}`).join(" ; "));
+  ajoute("Titres des sources", d.sources.filter(s => s.titre && !s.aucune_source).map(s => `${s.doc_id} – ${s.titre}`).join(" ; "));
+  ajoute("Documents consultés", (d.documents_consultes || []).map(x => typeof x === "string" ? x : `${x.doc_id}${x.titre ? " – " + x.titre : ""}`).join(" ; "));
+  ajoute("Temps", enregistre ? `${secondes(d.duree_ms)} (mesuré à l'enregistrement)` : `${secondes(Math.max(temps || 0, d.duree_ms || 0))} (génération : ${secondes(d.duree_ms || 0)})`);
+  ajoute("Version", d.version);
+  if (enregistre && d.relecture) ajoute("Commentaire de l'expert", d.relecture.commentaire);
+  blocs.push(cree("details", { className: "details" }, [cree("summary", { textContent: "Détails" }), cree("dl", {}, lignes)]));
+
+  $("reponse").replaceChildren(...blocs);
+}
+
+async function copierTexte(texte, bouton) {
+  try { await navigator.clipboard.writeText(texte); }
+  catch (e) {
+    const zone = cree("textarea", { value: texte }); zone.style.position = "fixed"; zone.style.opacity = "0";
+    document.body.append(zone); zone.select(); document.execCommand("copy"); zone.remove();
+  }
+  bouton.textContent = "Copié"; bouton.dataset.copie = "true";
+  setTimeout(() => { bouton.textContent = "Copier"; bouton.dataset.copie = "false"; }, 1800);
+}
+
+/* À l'ouverture, sans service joignable, la console passe en démo hors ligne. */
+async function verifierService() {
+  try {
+    const ctrl = new AbortController(); const minuterie = setTimeout(() => ctrl.abort(), 3000);
+    // Requête GET opaque : réussit dès que le serveur répond (quel que soit le code), échoue s'il est injoignable.
+    await fetch(adresse, { method: "GET", mode: "no-cors", cache: "no-store", signal: ctrl.signal }); clearTimeout(minuterie);
+  } catch (e) {
+    definirMode("demo", "Service injoignable.");
+  }
+}
+
+/* Démarrage */
+definirMode(mode);
+const ref = params.get("q");
+if (mode === "demo" && ref) {
+  const d = DEMO.find(x => x.relecture && x.relecture.ref === ref);
+  if (d) { poserQuestion(d.question); afficher(d, { enregistre: true }); }
+}
+const questionLien = params.get("question");
+if (mode === "ligne" && questionLien) { poserQuestion(questionLien); demander(questionLien); }
+else if (mode === "ligne") verifierService();
+</script>
+</body>
+</html>

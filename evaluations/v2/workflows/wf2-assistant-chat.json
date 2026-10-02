@@ -1,0 +1,134 @@
+{
+  "name": "Kalyo – 2 Assistant (chat)",
+  "nodes": [
+    {
+      "id": "d864888c-aff0-4351-835d-5c826d1ed3a0",
+      "name": "Chat conseiller",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        300
+      ],
+      "parameters": {
+        "public": true,
+        "mode": "hostedChat",
+        "authentication": "n8nUserAuth",
+        "initialMessages": "Bonjour 👋 Je suis l'assistant des conseillers Kalyo Télécom.\nPosez votre question comme à un collègue expérimenté : je réponds uniquement à partir de la documentation interne.",
+        "options": {
+          "title": "Assistant conseiller Kalyo",
+          "subtitle": "Projet de démonstration – entreprise et documentation fictives",
+          "inputPlaceholder": "Ex. : client en Suisse avec 45 € de data facturée…",
+          "responseMode": "lastNode"
+        }
+      },
+      "webhookId": "58f7fd09-752c-4556-b893-9d56dbc22ce3"
+    },
+    {
+      "id": "5a53c11d-de49-4905-9eaf-0530b48155a6",
+      "name": "Appeler le cœur RAG",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        240,
+        300
+      ],
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__ID_WF2B_COEUR_RAG__"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "question": "={{ $json.chatInput }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "question",
+              "displayName": "question",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "id": "106d4fe4-b7e4-427a-810f-bbc4589ad56e",
+      "name": "Réponse au chat",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        300
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ea831193-61e4-4c81-8584-cd514ccc5827",
+              "name": "output",
+              "value": "={{ $json.reponse }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "2f1d1964-a0c1-4ab9-9841-850a4816ccc2",
+      "name": "Note assistant",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -40
+      ],
+      "parameters": {
+        "content": "## WF2 – Assistant (chat)\nFenêtre de chat hébergée par n8n, réservée aux utilisateurs connectés à l'instance.\n\nActiver le workflow puis ouvrir l'URL du chat affichée dans le nœud « Chat conseiller ».",
+        "width": 460,
+        "height": 200
+      }
+    }
+  ],
+  "connections": {
+    "Chat conseiller": {
+      "main": [
+        [
+          {
+            "node": "Appeler le cœur RAG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Appeler le cœur RAG": {
+      "main": [
+        [
+          {
+            "node": "Réponse au chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

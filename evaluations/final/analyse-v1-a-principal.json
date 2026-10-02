@@ -1,0 +1,82 @@
+{
+  "global": {
+    "n": 43,
+    "justesse": "76,7 %",
+    "justesse_max": 24,
+    "fidelite": "100 %",
+    "source_ok": "100 %",
+    "recherche_ok": "100 %",
+    "rappel_regles": "71,2 %",
+    "format_ok": "100 %",
+    "bons_refus": "87,5 %",
+    "refus_a_tort": "0 %",
+    "chiffres_non_retrouves": 0,
+    "juge_illisible": 0
+  },
+  "par_categorie": {
+    "repondable": {
+      "n": 25,
+      "justesse": "74 %",
+      "justesse_max": 12,
+      "fidelite": "100 %",
+      "source_ok": "100 %",
+      "recherche_ok": "100 %",
+      "rappel_regles": "69,3 %",
+      "format_ok": "100 %",
+      "bons_refus": "–",
+      "refus_a_tort": "0 %",
+      "chiffres_non_retrouves": 0,
+      "juge_illisible": 0
+    },
+    "piege": {
+      "n": 10,
+      "justesse": "75 %",
+      "justesse_max": 5,
+      "fidelite": "100 %",
+      "source_ok": "100 %",
+      "recherche_ok": "100 %",
+      "rappel_regles": "75,8 %",
+      "format_ok": "100 %",
+      "bons_refus": "–",
+      "refus_a_tort": "0 %",
+      "chiffres_non_retrouves": 0,
+      "juge_illisible": 0
+    },
+    "hors_doc": {
+      "n": 8,
+      "justesse": "87,5 %",
+      "justesse_max": 7,
+      "fidelite": "100 %",
+      "source_ok": "–",
+      "recherche_ok": "–",
+      "rappel_regles": "–",
+      "format_ok": "100 %",
+      "bons_refus": "87,5 %",
+      "refus_a_tort": "–",
+      "chiffres_non_retrouves": 0,
+      "juge_illisible": 0
+    }
+  },
+  "latence_ms": {
+    "mediane": 3069,
+    "p95": 4037,
+    "max": 5771
+  },
+  "concision": {
+    "mots_reponse_mediane": 165,
+    "mots_reponse_max": 297,
+    "mots_reponse_courte_mediane": 26,
+    "reponses_courtes_de_plus_de_30_mots": 12
+  },
+  "titres_corriges_automatiquement": 0,
+  "echecs": [
+    {
+      "id": "H01",
+      "justesse": 0,
+      "fidelite": 1,
+      "refus_ok": 0,
+      "commentaire_juge": "L'assistant n'a pas effectué l'escalade vers le superviseur demandée dans les faits attendus.",
+      "affirmations_non_sourcees": ""
+    }
+  ]
+}

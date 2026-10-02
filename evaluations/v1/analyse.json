@@ -1,0 +1,89 @@
+{
+  "global": {
+    "n": 43,
+    "justesse": "80,2 %",
+    "justesse_max": 28,
+    "fidelite": "95,3 %",
+    "source_ok": "100 %",
+    "recherche_ok": "100 %",
+    "rappel_regles": "67,1 %",
+    "format_ok": "100 %",
+    "bons_refus": "100 %",
+    "refus_a_tort": "0 %",
+    "chiffres_non_retrouves": 0,
+    "juge_illisible": 0
+  },
+  "par_categorie": {
+    "repondable": {
+      "n": 25,
+      "justesse": "80 %",
+      "justesse_max": 15,
+      "fidelite": "100 %",
+      "source_ok": "100 %",
+      "recherche_ok": "100 %",
+      "rappel_regles": "67,7 %",
+      "format_ok": "100 %",
+      "bons_refus": "–",
+      "refus_a_tort": "0 %",
+      "chiffres_non_retrouves": 0,
+      "juge_illisible": 0
+    },
+    "piege": {
+      "n": 10,
+      "justesse": "65 %",
+      "justesse_max": 5,
+      "fidelite": "80 %",
+      "source_ok": "100 %",
+      "recherche_ok": "100 %",
+      "rappel_regles": "65,8 %",
+      "format_ok": "100 %",
+      "bons_refus": "–",
+      "refus_a_tort": "0 %",
+      "chiffres_non_retrouves": 0,
+      "juge_illisible": 0
+    },
+    "hors_doc": {
+      "n": 8,
+      "justesse": "100 %",
+      "justesse_max": 8,
+      "fidelite": "100 %",
+      "source_ok": "–",
+      "recherche_ok": "–",
+      "rappel_regles": "–",
+      "format_ok": "100 %",
+      "bons_refus": "100 %",
+      "refus_a_tort": "–",
+      "chiffres_non_retrouves": 0,
+      "juge_illisible": 0
+    }
+  },
+  "latence_ms": {
+    "mediane": 3158,
+    "p95": 4353,
+    "max": 16226
+  },
+  "concision": {
+    "mots_reponse_mediane": 160,
+    "mots_reponse_max": 279,
+    "mots_reponse_courte_mediane": 22,
+    "reponses_courtes_de_plus_de_30_mots": 6
+  },
+  "echecs": [
+    {
+      "id": "Q09",
+      "justesse": 0,
+      "fidelite": 0,
+      "refus_ok": 1,
+      "commentaire_juge": "La réponse contredit les faits attendus concernant l'escalade et omet des informations essentielles comme le prix au Mo, l'exception du forfait 300 Go et la condition des 12 mois.",
+      "affirmations_non_sourcees": "Aucune escalade"
+    },
+    {
+      "id": "P08",
+      "justesse": 0,
+      "fidelite": 0,
+      "refus_ok": 1,
+      "commentaire_juge": "L'assistant répond correctement à la question mais contredit les faits attendus en affirmant qu'il n'y a aucune escalade, alors qu'un transfert au Service Fraude & Sécurité est prévu en cas de fraude.",
+      "affirmations_non_sourcees": "Escalade : Aucune"
+    }
+  ]
+}

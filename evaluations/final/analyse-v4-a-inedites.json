@@ -1,0 +1,82 @@
+{
+  "global": {
+    "n": 10,
+    "justesse": "70 %",
+    "justesse_max": 5,
+    "fidelite": "100 %",
+    "source_ok": "87,5 %",
+    "recherche_ok": "100 %",
+    "rappel_regles": "75 %",
+    "format_ok": "100 %",
+    "bons_refus": "100 %",
+    "refus_a_tort": "12,5 %",
+    "chiffres_non_retrouves": 0,
+    "juge_illisible": 0
+  },
+  "par_categorie": {
+    "repondable": {
+      "n": 6,
+      "justesse": "58,3 %",
+      "justesse_max": 2,
+      "fidelite": "100 %",
+      "source_ok": "83,3 %",
+      "recherche_ok": "100 %",
+      "rappel_regles": "75 %",
+      "format_ok": "100 %",
+      "bons_refus": "–",
+      "refus_a_tort": "16,7 %",
+      "chiffres_non_retrouves": 0,
+      "juge_illisible": 0
+    },
+    "piege": {
+      "n": 2,
+      "justesse": "75 %",
+      "justesse_max": 1,
+      "fidelite": "100 %",
+      "source_ok": "100 %",
+      "recherche_ok": "100 %",
+      "rappel_regles": "75 %",
+      "format_ok": "100 %",
+      "bons_refus": "–",
+      "refus_a_tort": "0 %",
+      "chiffres_non_retrouves": 0,
+      "juge_illisible": 0
+    },
+    "hors_doc": {
+      "n": 2,
+      "justesse": "100 %",
+      "justesse_max": 2,
+      "fidelite": "100 %",
+      "source_ok": "–",
+      "recherche_ok": "–",
+      "rappel_regles": "–",
+      "format_ok": "100 %",
+      "bons_refus": "100 %",
+      "refus_a_tort": "–",
+      "chiffres_non_retrouves": 0,
+      "juge_illisible": 0
+    }
+  },
+  "latence_ms": {
+    "mediane": 3041,
+    "p95": 5113,
+    "max": 5113
+  },
+  "concision": {
+    "mots_reponse_mediane": 144,
+    "mots_reponse_max": 189,
+    "mots_reponse_courte_mediane": 21,
+    "reponses_courtes_de_plus_de_30_mots": 1
+  },
+  "titres_corriges_automatiquement": 0,
+  "echecs": [
+    {
+      "id": "N05",
+      "justesse": 0,
+      "fidelite": 1,
+      "refus_ok": 0,
+      "commentaire_juge": "L'assistant refuse de répondre alors qu'une réponse était attendue, affirmant que la procédure après le délai de 10 jours n'est pas documentée, alors que les éléments de la procédure (retour expéditeur) sont présents dans le contexte.",
+      "affirmations_non_sourcees": ""
+    }
+  ]
+}

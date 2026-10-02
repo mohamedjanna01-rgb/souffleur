@@ -1,0 +1,369 @@
+{
+  "name": "Kalyo – 2b Cœur RAG",
+  "nodes": [
+    {
+      "id": "adb092a8-3153-4db8-acbe-385faeb168d5",
+      "name": "Entrée : question",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -660,
+        300
+      ],
+      "parameters": {
+        "inputSource": "workflowInputs",
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "question",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "daada4ee-09f4-4183-b889-2950704a24db",
+      "name": "Vérifier la question",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -440,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// Garde : une question absente ou vide renvoie un message clair\n// au lieu de faire planter la recherche (« Cannot read properties of null »).\nconst q = String($input.first().json.question ?? '').trim();\nreturn [{ json: { question: q, question_vide: q.length === 0 } }];"
+      }
+    },
+    {
+      "id": "bd413d90-524a-4880-9095-f5671218f10d",
+      "name": "Question vide ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -220,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "04e7937a-08af-40d1-990f-f196556cc109",
+              "leftValue": "={{ $json.question_vide }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "f08ccd08-2b3a-418d-9d40-cda74c1b86ed",
+      "name": "Réponse : question vide",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        80
+      ],
+      "parameters": {
+        "jsCode": "// Même structure de sortie que le cas normal, pour le chat comme pour les évaluations.\nreturn [{ json: {\n  reponse: '### Réponse courte\\nAucune question reçue : saisissez votre question, puis envoyez-la.',\n  refus: false,\n  docs_recuperes: '',\n  passages: [],\n  contexte: '',\n  top_k: 0,\n  modele: '',\n  prompt_version: 'assistant-v3',\n  duree_ms: 0,\n  erreur: 'question_vide',\n} }];"
+      }
+    },
+    {
+      "id": "83ec8092-cf43-4336-9776-497648b59068",
+      "name": "Paramètres",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        300
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "491bfb79-ed5b-49e5-b7ab-a2f1c42e36c0",
+              "name": "question",
+              "value": "={{ $json.question }}",
+              "type": "string"
+            },
+            {
+              "id": "d7d6f353-76b2-4c76-8951-aa9ab266025f",
+              "name": "top_k",
+              "value": 6,
+              "type": "number"
+            },
+            {
+              "id": "00039699-11cf-422d-8b1b-c6e212ad8878",
+              "name": "modele",
+              "value": "gemini-3.5-flash-lite",
+              "type": "string"
+            },
+            {
+              "id": "408c26b0-cf40-45a7-90c4-8005d069b577",
+              "name": "prompt_version",
+              "value": "assistant-v3",
+              "type": "string"
+            },
+            {
+              "id": "3d26a5c9-d451-4855-adb1-608488830139",
+              "name": "t0",
+              "value": "={{ $now.toMillis() }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "7612505a-2ec4-4cde-a837-487b4b4cfb50",
+      "name": "Recherche documentaire",
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        440,
+        300
+      ],
+      "parameters": {
+        "mode": "load",
+        "tableName": {
+          "__rl": true,
+          "mode": "id",
+          "value": "documents"
+        },
+        "prompt": "={{ $json.question }}",
+        "topK": "={{ $json.top_k }}",
+        "includeDocumentMetadata": true,
+        "options": {
+          "queryName": "match_documents"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "id": "2ae532fa-5ffb-4812-91cc-c7de76f8c49e",
+      "name": "Embeddings Gemini (question)",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        440,
+        540
+      ],
+      "parameters": {
+        "modelName": "models/gemini-embedding-001"
+      }
+    },
+    {
+      "id": "5bcb8417-55b0-48db-aacf-b8147ecbfdbb",
+      "name": "Construire le contexte",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// Assemble les passages trouvés en un bloc CONTEXTE, chaque passage précédé de sa source.\nconst p = $('Paramètres').first().json;\n// Les accolades sont remplacées : elles seraient lues comme des variables par le gabarit de prompt.\nconst nettoyer = s => String(s ?? '').replace(/[{]/g, '(').replace(/[}]/g, ')');\n\nconst passages = $input.all()\n  .map(i => i.json)\n  .map(j => ({ d: j.document || j, score: j.score }))\n  .filter(x => x.d && x.d.pageContent)\n  .map(x => ({\n    texte: x.d.pageContent,\n    doc_id: (x.d.metadata || {}).doc_id || '',\n    section: (x.d.metadata || {}).section || '',\n    regles: (x.d.metadata || {}).regles || '',\n    score: Math.round((x.score ?? 0) * 1000) / 1000,\n  }));\n\nconst contexte = passages.length\n  ? passages.map((x, i) => `--- Extrait ${i + 1} (${x.doc_id}, pertinence ${x.score}) ---\\n${x.texte}`).join('\\n\\n')\n  : 'Aucun extrait trouvé dans la documentation.';\n\nreturn [{ json: {\n  question: p.question,\n  question_nettoyee: nettoyer(p.question),\n  contexte: nettoyer(contexte),\n  docs_recuperes: [...new Set(passages.map(x => x.doc_id))].join(', '),\n  passages: passages.map(({ texte, ...m }) => m),\n  top_k: p.top_k,\n  modele: p.modele,\n  prompt_version: p.prompt_version,\n  t0: p.t0,\n} }];"
+      }
+    },
+    {
+      "id": "b68db1b4-31ab-4a91-8a41-1865a2980917",
+      "name": "Rédiger la réponse",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        900,
+        300
+      ],
+      "parameters": {
+        "promptType": "define",
+        "text": "=QUESTION DU CONSEILLER :\n{{ $json.question_nettoyee }}\n\nCONTEXTE (extraits de la documentation interne Kalyo) :\n{{ $json.contexte }}",
+        "messages": {
+          "messageValues": [
+            {
+              "type": "SystemMessagePromptTemplate",
+              "message": "Tu es l'assistant des conseillers du service client de Kalyo Télécom, un opérateur télécom. Un conseiller est en ligne avec un client et te pose une question. Il doit lire ta réponse en quelques secondes : sois bref, exact et directement utilisable. Tu réponds uniquement à partir des extraits de documentation interne fournis dans le CONTEXTE.\n\nRÈGLES ABSOLUES\n1. Utilise uniquement les informations du CONTEXTE. N'utilise jamais tes connaissances générales sur les opérateurs télécom.\n2. N'invente jamais un montant, un délai, un seuil, un nom de service, un nom d'outil ou une condition. Recopie les chiffres exactement comme dans le CONTEXTE.\n3. Quand une compensation, un frais ou un délai s'applique, donne le montant ou la durée exacte lu dans le CONTEXTE. N'écris jamais une formule vague comme « appliquer les compensations prévues ».\n4. Si le CONTEXTE ne permet pas de répondre avec certitude, utilise le FORMAT REFUS, sans rien ajouter.\n5. Si le CONTEXTE ne couvre qu'une partie de la question, réponds à cette partie et indique dans Vigilance ce qui n'est pas couvert, avec une escalade vers le superviseur.\n6. Client qui signale un problème, conteste, est mécontent ou veut résilier : la première étape est toujours « Laisser le client s'exprimer jusqu'au bout sans l'interrompre, puis reformuler. ». Aucune proposition (solution, geste, offre, transfert) avant cette étape. Dans ce cas, la phrase « À dire au client » commence par de l'écoute ou de l'empathie, pas par une proposition.\n7. Français correct et soigné : vouvoiement, accords justes, « après que » suivi de l'indicatif (« après que vous avez redémarré la box », jamais « après que vous ayez »).\n8. Rubrique Escalade : reprends uniquement les escalades écrites dans le CONTEXTE pour cette situation, avec le service exactement nommé dans le CONTEXTE et la condition qui la déclenche, y compris une escalade conditionnelle (exemple : « Superviseur si le geste dépasse 15 € »). N'invente jamais un service, une condition ou une escalade. Si le CONTEXTE n'en prévoit aucune pour cette situation, écris « Aucune ».\n\nCONCISION : RACCOURCIR LA FORMULATION, JAMAIS LE CONTENU\n- Réponse courte : 2 lignes au maximum, 30 mots au maximum.\n- Étapes à suivre : 6 étapes au maximum, chacune en une phrase courte.\n- À dire au client : 3 phrases au maximum.\n- Vigilance : 3 points au maximum.\n- Escalade : 1 ligne.\n- Pour tenir ces limites, raccourcis les phrases, jamais les informations. Ne supprime aucun montant, prix, délai, condition, branche de décision (« si… alors… ») ni escalade du CONTEXTE utile à la situation : regroupe-les plutôt dans une même étape.\nPas d'introduction, pas de conclusion, pas de formule de politesse envers le conseiller.\n\nFORMAT DE RÉPONSE : exactement ces 6 titres, dans cet ordre.\n\n### Réponse courte\n### Étapes à suivre\n### À dire au client\n### Vigilance\n### Escalade\n### Source\n\nFORMAT DE LA RUBRIQUE SOURCE : identique dans toutes les réponses.\n- Une ligne par document utilisé, qui commence par un tiret.\n- Chaque ligne suit exactement ce modèle : identifiant du document, tiret long, titre exact du document tel qu'il apparaît dans l'en-tête de l'extrait, tiret long, identifiants des règles entre crochets séparés par une virgule.\n- Exemple : - DOC-06 – Facturation – Hors forfait et consommations à l'étranger – [CONSO-05], [CONSO-17]\n- Cite uniquement des identifiants de règles qui apparaissent dans le CONTEXTE. Ne cite jamais un en-tête d'extrait, un numéro de section ou un identifiant inventé.\n- Si le document utilisé n'a pas de règle numérotée pour ce point, termine la ligne par « aucune règle numérotée ».\n\nFORMAT REFUS : à utiliser quand l'information n'est pas dans le CONTEXTE. Recopie-le tel quel, en complétant seulement la première phrase.\n\n### Réponse courte\nInformation non trouvée dans la documentation. Précise en une phrase ce qui manque.\n\n### Étapes à suivre\n1. Ne pas improviser de réponse.\n2. Mettre le client en attente ou lui proposer un rappel.\n3. Demander l'aide du superviseur.\n\n### À dire au client\n« Je préfère vérifier cette information plutôt que de vous donner une réponse inexacte. Je me renseigne et je reviens vers vous. »\n\n### Vigilance\n- Ne donner aucun montant, délai ou engagement qui ne figure pas dans la documentation.\n\n### Escalade\nSuperviseur, en transfert chaud ou pour avis pendant une mise en attente.\n\n### Source\n- Aucune source dans la documentation – DOC-14 – [ESC-04]"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "id": "1e46ca05-bf01-408e-abdc-32ddd1b3e8a0",
+      "name": "Gemini (assistant)",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        900,
+        540
+      ],
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash-lite",
+        "options": {
+          "temperature": 0,
+          "maxOutputTokens": 4096
+        }
+      }
+    },
+    {
+      "id": "dc992e88-6ef0-49b1-97a7-3d1e8ca96b65",
+      "name": "Mettre en forme la sortie",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1140,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// Sortie structurée du cœur RAG, utilisée par le chat (WF2) et les évaluations (WF3).\nconst c = $('Construire le contexte').first().json;\nconst brute = String($input.first().json.text || '').trim();\n\n// Correction déterministe des titres de rubrique déformés par le modèle\n// (ex. « ### À dire al client » → « ### À dire au client »), par distance d'édition.\nconst TITRES = ['Réponse courte', 'Étapes à suivre', 'À dire au client', 'Vigilance', 'Escalade', 'Source'];\nconst cle = s => s.toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/[^a-z]/g, '');\nconst distance = (a, b) => {\n  const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);\n  for (let j = 1; j <= b.length; j++) d[0][j] = j;\n  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++)\n    d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));\n  return d[a.length][b.length];\n};\nlet titres_corriges = 0;\nconst reponse = brute.split('\\n').map(ligne => {\n  const m = ligne.match(/^#{1,4}\\s*(.+?)\\s*:?\\s*$/);\n  if (!m) return ligne;\n  const meilleur = TITRES.map(t => ({ t, d: distance(cle(m[1]), cle(t)) })).sort((x, y) => x.d - y.d)[0];\n  const attendu = '### ' + meilleur.t;\n  if (meilleur.d <= 3 && ligne !== attendu) { titres_corriges++; return attendu; }\n  return ligne;\n}).join('\\n');\n\nreturn [{ json: {\n  reponse,\n  reponse_brute: brute,\n  titres_corriges,\n  refus: reponse.includes('Information non trouvée dans la documentation'),\n  docs_recuperes: c.docs_recuperes,\n  passages: c.passages,\n  contexte: c.contexte,\n  top_k: c.top_k,\n  modele: c.modele,\n  prompt_version: c.prompt_version,\n  duree_ms: Date.now() - c.t0,\n} }];"
+      }
+    },
+    {
+      "id": "f0b8f8ad-e83f-471a-be6e-6aab497f945b",
+      "name": "Note cœur RAG",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -40
+      ],
+      "parameters": {
+        "content": "## WF2b – Cœur RAG (sous-workflow)\nAppelé par le chat (WF2) **et** par les évaluations (WF3) : on évalue exactement le code de production.\n\nRecherche des 6 passages les plus proches → 1 appel Gemini avec le prompt `prompts/assistant-v3.md`. Une question vide renvoie un message clair.\n\nCredentials : Supabase API, Google Gemini (PaLM) API.",
+        "width": 560,
+        "height": 220
+      }
+    }
+  ],
+  "connections": {
+    "Entrée : question": {
+      "main": [
+        [
+          {
+            "node": "Vérifier la question",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vérifier la question": {
+      "main": [
+        [
+          {
+            "node": "Question vide ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Question vide ?": {
+      "main": [
+        [
+          {
+            "node": "Réponse : question vide",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Paramètres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Paramètres": {
+      "main": [
+        [
+          {
+            "node": "Recherche documentaire",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recherche documentaire": {
+      "main": [
+        [
+          {
+            "node": "Construire le contexte",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Construire le contexte": {
+      "main": [
+        [
+          {
+            "node": "Rédiger la réponse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rédiger la réponse": {
+      "main": [
+        [
+          {
+            "node": "Mettre en forme la sortie",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Gemini (question)": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Recherche documentaire",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini (assistant)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Rédiger la réponse",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "synthese": {
+    "questions": 5,
+    "reponses_strictement_identiques": "0 / 5",
+    "meme_reponse_courte": "0 / 5",
+    "memes_regles_citees": "0 / 5",
+    "memes_chiffres": "4 / 5",
+    "meme_decision_de_refus": "5 / 5",
+    "meme_escalade": "1 / 5"
+  },
+  "par_question": {
+    "Q01": {
+      "essais": 3,
+      "reponses_identiques": false,
+      "similarite_moyenne_mots": "66 %",
+      "meme_reponse_courte": false,
+      "memes_regles_citees": false,
+      "memes_chiffres": true,
+      "meme_decision_de_refus": true,
+      "meme_escalade": false
+    },
+    "Q09": {
+      "essais": 3,
+      "reponses_identiques": false,
+      "similarite_moyenne_mots": "75 %",
+      "meme_reponse_courte": false,
+      "memes_regles_citees": false,
+      "memes_chiffres": false,
+      "meme_decision_de_refus": true,
+      "meme_escalade": true
+    },
+    "Q14": {
+      "essais": 3,
+      "reponses_identiques": false,
+      "similarite_moyenne_mots": "79 %",
+      "meme_reponse_courte": false,
+      "memes_regles_citees": false,
+      "memes_chiffres": true,
+      "meme_decision_de_refus": true,
+      "meme_escalade": false
+    },
+    "P08": {
+      "essais": 3,
+      "reponses_identiques": false,
+      "similarite_moyenne_mots": "75 %",
+      "meme_reponse_courte": false,
+      "memes_regles_citees": false,
+      "memes_chiffres": true,
+      "meme_decision_de_refus": true,
+      "meme_escalade": false
+    },
+    "H07": {
+      "essais": 3,
+      "reponses_identiques": false,
+      "similarite_moyenne_mots": "81 %",
+      "meme_reponse_courte": false,
+      "memes_regles_citees": false,
+      "memes_chiffres": true,
+      "meme_decision_de_refus": true,
+      "meme_escalade": false
+    }
+  }
+}

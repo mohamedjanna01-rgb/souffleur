@@ -1,0 +1,90 @@
+{
+  "global": {
+    "n": 10,
+    "justesse": "65 %",
+    "justesse_max": 5,
+    "fidelite": "90 %",
+    "source_ok": "100 %",
+    "recherche_ok": "100 %",
+    "rappel_regles": "81,3 %",
+    "format_ok": "100 %",
+    "bons_refus": "100 %",
+    "refus_a_tort": "12,5 %",
+    "chiffres_non_retrouves": 0,
+    "juge_illisible": 0
+  },
+  "par_categorie": {
+    "repondable": {
+      "n": 6,
+      "justesse": "50 %",
+      "justesse_max": 2,
+      "fidelite": "83,3 %",
+      "source_ok": "100 %",
+      "recherche_ok": "100 %",
+      "rappel_regles": "83,3 %",
+      "format_ok": "100 %",
+      "bons_refus": "–",
+      "refus_a_tort": "16,7 %",
+      "chiffres_non_retrouves": 0,
+      "juge_illisible": 0
+    },
+    "piege": {
+      "n": 2,
+      "justesse": "75 %",
+      "justesse_max": 1,
+      "fidelite": "100 %",
+      "source_ok": "100 %",
+      "recherche_ok": "100 %",
+      "rappel_regles": "75 %",
+      "format_ok": "100 %",
+      "bons_refus": "–",
+      "refus_a_tort": "0 %",
+      "chiffres_non_retrouves": 0,
+      "juge_illisible": 0
+    },
+    "hors_doc": {
+      "n": 2,
+      "justesse": "100 %",
+      "justesse_max": 2,
+      "fidelite": "100 %",
+      "source_ok": "–",
+      "recherche_ok": "–",
+      "rappel_regles": "–",
+      "format_ok": "100 %",
+      "bons_refus": "100 %",
+      "refus_a_tort": "–",
+      "chiffres_non_retrouves": 0,
+      "juge_illisible": 0
+    }
+  },
+  "latence_ms": {
+    "mediane": 3287,
+    "p95": 5533,
+    "max": 5533
+  },
+  "concision": {
+    "mots_reponse_mediane": 142,
+    "mots_reponse_max": 177,
+    "mots_reponse_courte_mediane": 17,
+    "reponses_courtes_de_plus_de_30_mots": 1
+  },
+  "titres_corriges_automatiquement": 1,
+  "echecs": [
+    {
+      "id": "N03",
+      "justesse": 0,
+      "fidelite": 0,
+      "refus_ok": 1,
+      "commentaire_juge": "L'assistant commet une erreur grave en affirmant que le client perdra l'Avantage Foyer en passant à 80 Go, alors que la documentation précise que cet avantage s'applique aux forfaits de 80 Go ou plus.",
+      "affirmations_non_sourcees": "vous perdrez l'Avantage Foyer de -5 € puisque vous passez en dessous de 80 Go"
+    },
+    {
+      "id": "N05",
+      "justesse": 0,
+      "fidelite": 1,
+      "refus_ok": 0,
+      "commentaire_juge": "L'assistant refuse de répondre en affirmant que l'information est absente, alors que la procédure de retour expéditeur (LIV-04) est la suite logique du délai de conservation de 10 jours (LIV-03).",
+      "affirmations_non_sourcees": ""
+    }
+  ]
+}

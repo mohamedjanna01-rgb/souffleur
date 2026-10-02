@@ -1,0 +1,98 @@
+{
+  "global": {
+    "n": 43,
+    "justesse": "73,3 %",
+    "justesse_max": 22,
+    "fidelite": "95,3 %",
+    "source_ok": "100 %",
+    "recherche_ok": "100 %",
+    "rappel_regles": "66,7 %",
+    "format_ok": "100 %",
+    "bons_refus": "100 %",
+    "refus_a_tort": "0 %",
+    "chiffres_non_retrouves": 0,
+    "juge_illisible": 0
+  },
+  "par_categorie": {
+    "repondable": {
+      "n": 25,
+      "justesse": "74 %",
+      "justesse_max": 12,
+      "fidelite": "100 %",
+      "source_ok": "100 %",
+      "recherche_ok": "100 %",
+      "rappel_regles": "66 %",
+      "format_ok": "100 %",
+      "bons_refus": "–",
+      "refus_a_tort": "0 %",
+      "chiffres_non_retrouves": 0,
+      "juge_illisible": 0
+    },
+    "piege": {
+      "n": 10,
+      "justesse": "65 %",
+      "justesse_max": 4,
+      "fidelite": "80 %",
+      "source_ok": "100 %",
+      "recherche_ok": "100 %",
+      "rappel_regles": "68,3 %",
+      "format_ok": "100 %",
+      "bons_refus": "–",
+      "refus_a_tort": "0 %",
+      "chiffres_non_retrouves": 0,
+      "juge_illisible": 0
+    },
+    "hors_doc": {
+      "n": 8,
+      "justesse": "81,3 %",
+      "justesse_max": 6,
+      "fidelite": "100 %",
+      "source_ok": "–",
+      "recherche_ok": "–",
+      "rappel_regles": "–",
+      "format_ok": "100 %",
+      "bons_refus": "100 %",
+      "refus_a_tort": "–",
+      "chiffres_non_retrouves": 0,
+      "juge_illisible": 0
+    }
+  },
+  "latence_ms": {
+    "mediane": 3205,
+    "p95": 4246,
+    "max": 5691
+  },
+  "concision": {
+    "mots_reponse_mediane": 162,
+    "mots_reponse_max": 302,
+    "mots_reponse_courte_mediane": 21,
+    "reponses_courtes_de_plus_de_30_mots": 5
+  },
+  "titres_corriges_automatiquement": 4,
+  "echecs": [
+    {
+      "id": "Q21",
+      "justesse": 0,
+      "fidelite": 0,
+      "refus_ok": 1,
+      "commentaire_juge": "La réponse contredit les faits attendus et le contexte en indiquant de passer par le superviseur pour une modification de contrat au lieu du Service Kalyo Pro.",
+      "affirmations_non_sourcees": "Superviseur si le client demande une modification de contrat"
+    },
+    {
+      "id": "P08",
+      "justesse": 1,
+      "fidelite": 0,
+      "refus_ok": 1,
+      "commentaire_juge": "L'assistant répond correctement à la question mais omet l'escalade vers le Service Fraude & Sécurité et affirme par erreur qu'il n'y a aucune escalade possible.",
+      "affirmations_non_sourcees": "Aucune"
+    },
+    {
+      "id": "H05",
+      "justesse": 0,
+      "fidelite": 1,
+      "refus_ok": 1,
+      "commentaire_juge": "L'assistant a correctement identifié l'absence d'information, mais il a contredit les faits attendus en indiquant qu'aucune escalade vers le superviseur n'était nécessaire.",
+      "affirmations_non_sourcees": ""
+    }
+  ]
+}

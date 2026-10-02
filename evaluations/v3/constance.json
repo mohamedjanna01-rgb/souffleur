@@ -1,0 +1,122 @@
+[
+ {
+  "id": "Q01",
+  "essai": 1,
+  "reponse": "### Réponse courte\nVérifier le câble fibre (PTO), redémarrer, contrôler la puissance optique, puis planifier un technicien, envoyer un câble ou procéder à un échange de box.\n\n### Étapes à suivre\n1. Vérifier le câble fibre entre la prise murale (PTO) et la box (bien enfoncé, non plié, non écrasé, sans capuchon).\n2. Redémarrer la box [FIB-05].\n3. Contrôler la puissance optique dans Sonde :\n   - LOS ou < -27 dBm (câble bon) → rendez-vous technicien (DOC-05).\n   - Câble abîmé ou cassé → envoi d'un câble fibre de remplacement (gratuit, 3 à 5 jours ouvrés) ; PTO arrachée/endommagée → rendez-vous technicien.\n   - Puissance normale → échange standard de la box.\n\n### À dire au client\n« Pouvez-vous vérifier le câble fibre entre la prise murale et la box ? Je vous invite ensuite à redémarrer votre box. »\n\n### Vigilance\n- Si le câble est abîmé, envoyer un câble fibre de remplacement gratuit (3 à 5 jours ouvrés).\n- Si la PTO est endommagée ou si la puissance optique est LOS ou inférieure à -27 dBm, planifier un rendez-vous technicien.\n\n### Escalade\nTechnicien (Plan'Inter via DOC-05) si le signal est absent ou si la PTO est endommagée.\n\n### Source\n- DOC-02 – Diagnostic à distance – Internet fibre et box – aucune règle numérotée",
+  "refus": false,
+  "duree_ms": 5614,
+  "erreur": ""
+ },
+ {
+  "id": "Q09",
+  "essai": 1,
+  "reponse": "### Réponse courte\nOui, c'est normal : la Suisse est en Zone 1 et non dans l'UE, la data y est donc facturée hors forfait (sauf si forfait 300 Go 5G avec 10 Go inclus).\n\n### Étapes à suivre\n1. Laisser le client s'exprimer jusqu'au bout sans l'interrompre, puis reformuler.\n2. Expliquer que la Suisse n'est pas dans l'Union européenne mais en Zone 1.\n3. Proposer d'activer un Pass Voyage Zone 1 (5 Go / 7 jours pour 15 €) pour le prochain voyage et le blocage gratuit du hors forfait.\n4. Appliquer un geste si éligible (limité à 50 % et plafonné à 15 €).\n\n### À dire au client\n« Je comprends votre surprise en voyant ce montant. Je regarde le détail avec vous pour comprendre d'où il vient. La Suisse ne fait pas partie de l'Union européenne pour les tarifs mobiles : c'est pour cela que votre forfait ne l'incluait pas. »\n\n### Vigilance\n- Ne pas promettre l'annulation totale d'un hors forfait (geste limité à 50 % et plafonné à 15 € pour le conseiller N1).\n- Ne jamais dire qu'un Pass Voyage rembourse des consommations déjà faites.\n- Ne pas affirmer qu'un pays est dans l'Europe sans vérifier la zone (Suisse = Zone 1).\n\n### Escalade\nSuperviseur si le geste dépasse 15 €.\n\n### Source\n- DOC-06 – Facturation – Hors forfait et consommations à l'étranger – [CONSO-05], [CONSO-08], [CONSO-09], [CONSO-10]",
+  "refus": false,
+  "duree_ms": 3275,
+  "erreur": ""
+ },
+ {
+  "id": "Q14",
+  "essai": 1,
+  "reponse": "### Réponse courte\nOui, 8,00 € d'indemnité contractuelle pour 6 jours de coupure totale (Box Évolution), plus 10 € de geste commercial (panne longue de 6 à 10 jours).\n\n### Étapes à suivre\n1. Laisser le client s'exprimer jusqu'au bout sans l'interrompre, puis reformuler.\n2. Saisir l'indemnité dans Orbite (« Indemnité interruption ») à partir des dates du ticket.\n3. Appliquer le geste commercial de 10 € (dans le plafond N1 de 30 € sur 12 mois).\n4. Ajouter l'étiquette « Panne longue » dans Orbite.\n\n### À dire au client\n« Je comprends parfaitement votre agacement face à cette coupure, et je vais faire le point avec vous sur votre dossier. Pour ces 6 jours sans internet, une indemnité de 8,00 € sera déduite de votre prochaine facture. »\n\n### Vigilance\n- Panne individuelle : le conseiller saisit lui-même l'indemnité dans Orbite, aucun plafond.\n- Le geste commercial s'ajoute à l'indemnité et compte dans le plafond N1.\n\n### Escalade\nSuperviseur si le geste dépasse le plafond N1 de 30 € par compte sur 12 mois ou si la panne dépasse 10 jours.\n\n### Source\n- DOC-08 – Pannes longues, compensations et procédure de rétention – [PANNE-04], [PANNE-05], [PANNE-13], [PANNE-14], [PANNE-01], [PANNE-02]",
+  "refus": false,
+  "duree_ms": 3906,
+  "erreur": ""
+ },
+ {
+  "id": "P08",
+  "essai": 1,
+  "reponse": "### Réponse courte\nNon, le conseiller ne doit jamais demander un code bancaire ou un code reçu de la banque.\n\n### Étapes à suivre\n1. Expliquer au client qu'il ne faut pas communiquer un code reçu de sa banque.\n2. Utiliser uniquement le Code Kalyo envoyé depuis Orbite si une authentification est nécessaire.\n\n### À dire au client\n« Pour votre sécurité, je ne vous demanderai jamais votre mot de passe ni vos codes bancaires. »\n\n### Vigilance\n- Ne jamais demander un mot de passe, un code bancaire ou un code SMS autre que le Code Kalyo déclenché par le conseiller.\n\n### Escalade\nService Fraude & Sécurité si le client a déjà communiqué des informations.\n\n### Source\n- DOC-12 – Accompagner un client peu à l'aise avec la technologie – [ACC-03], [ACC-04]",
+  "refus": false,
+  "duree_ms": 3321,
+  "erreur": ""
+ },
+ {
+  "id": "H07",
+  "essai": 1,
+  "reponse": "### Réponse courte\nInformation non trouvée dans la documentation. La procédure en cas de décès d'un titulaire n'y figure pas.\n\n### Étapes à suivre\n1. Ne pas improviser de réponse.\n2. Mettre le client en attente ou lui proposer un rappel.\n3. Demander l'aide du superviseur.\n\n### À dire au client\n« Je préfère vérifier cette information plutôt que de vous donner une réponse inexacte. Je me renseigne et je reviens vers vous. »\n\n### Vigilance\n- Ne donner aucun montant, délai ou engagement qui ne figure pas dans la documentation.\n\n### Escalade\nSuperviseur\n\n### Source\n- DOC-11 – Clients avec plusieurs lignes ou plusieurs box, et clients professionnels – aucune règle numérotée",
+  "refus": true,
+  "duree_ms": 2689,
+  "erreur": ""
+ },
+ {
+  "id": "Q01",
+  "essai": 2,
+  "reponse": "### Réponse courte\nVérifier le câble fibre (PTO), redémarrer, contrôler la puissance optique dans Sonde, puis planifier un technicien, envoyer un câble ou procéder à un échange standard.\n\n### Étapes à suivre\n1. Vérifier le câble fibre entre la prise murale et la box (bien enfoncé, non plié, non écrasé, sans capuchon).\n2. Redémarrer la box.\n3. Contrôler la puissance optique dans Sonde :\n   - Si LOS ou inférieure à -27 dBm → rendez-vous technicien.\n   - Si câble abîmé/cassé → envoi d'un câble fibre de remplacement gratuit (3 à 5 jours ouvrés). Si PTO endommagée → rendez-vous technicien.\n   - Si puissance normale mais voyant orange fixe → échange standard de la box.\n\n### À dire au client\n« Je vais vous guider pour vérifier le câble fibre entre votre prise murale et la box, puis nous ferons un redémarrage si besoin. »\n\n### Vigilance\n- S'assurer que le câble émet un « clic » des deux côtés.\n- Ne pas confondre voyant orange fixe (pas de signal fibre) et orange clignotant.\n\n### Escalade\nTechnicien (via Plan'Inter, DOC-05) si signal absent ou PTO endommagée.\n\n### Source\n- DOC-02 – Diagnostic à distance – Internet fibre et box – [DOC-02]",
+  "refus": false,
+  "duree_ms": 3050,
+  "erreur": ""
+ },
+ {
+  "id": "Q09",
+  "essai": 2,
+  "reponse": "### Réponse courte\nOui, c'est normal : la Suisse est en Zone 1 (tarifs à l'usage ou inclus selon le forfait), pas dans l'Union européenne.\n\n### Étapes à suivre\n1. Laisser le client s'exprimer jusqu'au bout sans l'interrompre, puis reformuler.\n2. Expliquer que la Suisse n'est pas dans l'UE mais en Zone 1.\n3. Proposer d'activer un Pass Voyage pour le prochain voyage et le blocage gratuit du hors forfait.\n\n### À dire au client\n« Je comprends votre surprise en voyant ce montant. Je regarde le détail avec vous pour comprendre d'où il vient. La Suisse ne fait pas partie de l'Union européenne pour les tarifs mobiles : c'est pour cela que votre forfait ne l'incluait pas. »\n\n### Vigilance\n- Ne pas promettre l'annulation totale d'un hors forfait (geste limité à 50 % et plafonné à 15 € pour le conseiller N1).\n- Ne jamais dire qu'un Pass Voyage rembourse des consommations déjà faites.\n\n### Escalade\nSuperviseur si le geste dépasse 15 €.\n\n### Source\n- DOC-06 – Facturation – Hors forfait et consommations à l'étranger – [CONSO-04], [CONSO-05], [CONSO-08], aucune règle numérotée",
+  "refus": false,
+  "duree_ms": 3293,
+  "erreur": ""
+ },
+ {
+  "id": "Q14",
+  "essai": 2,
+  "reponse": "### Réponse courte\nOui, 8,00 € d'indemnité contractuelle pour 6 jours avec la Box Évolution, plus un geste commercial de 10 € (panne longue de 6 à 10 jours).\n\n### Étapes à suivre\n1. Laisser le client s'exprimer jusqu'au bout sans l'interrompre, puis reformuler.\n2. Saisir l'indemnité dans Orbite (« Indemnité interruption ») à partir des dates du ticket.\n3. Ajouter l'étiquette « Panne longue » dans Orbite.\n4. Accorder le geste commercial de 10 € (dans le plafond de 30 € par compte sur 12 mois).\n\n### À dire au client\n« Je comprends parfaitement votre agacement face à cette coupure, et je vais faire le point avec vous. Pour ces 6 jours sans internet, une indemnité de 8,00 € sera déduite de votre prochaine facture. »\n\n### Vigilance\n- Panne individuelle : le conseiller saisit lui-même l'indemnité dans Orbite.\n- Le geste commercial s'ajoute à l'indemnité et compte dans le plafond du conseiller N1 (30 € par compte sur 12 mois).\n\n### Escalade\nSuperviseur si le geste dépasse le plafond de 30 € par compte sur 12 mois ou si la panne dure plus de 10 jours.\n\n### Source\n- DOC-08 – Pannes longues, compensations et procédure de rétention – [PANNE-04], [PANNE-05], [PANNE-06], [PANNE-13], [PANNE-14]",
+  "refus": false,
+  "duree_ms": 3266,
+  "erreur": ""
+ },
+ {
+  "id": "P08",
+  "essai": 2,
+  "reponse": "### Réponse courte\nNon, le conseiller ne doit jamais demander un code bancaire ou un code reçu de la banque.\n\n### Étapes à suivre\n1. Expliquer au client qu'il ne doit pas communiquer un code reçu de sa banque.\n2. Utiliser uniquement le Code Kalyo déclenché depuis Orbite si une authentification par SMS est nécessaire.\n\n### À dire au client\n« Je ne vous demande jamais de code bancaire ou de code reçu de votre banque. Ne me lisez pas ce code, nous allons utiliser le Code Kalyo sécurisé. »\n\n### Vigilance\n- Ne jamais demander un mot de passe, un code bancaire ou un code SMS autre que le Code Kalyo déclenché par le conseiller.\n\n### Escalade\nAucune.\n\n### Source\n- DOC-12 – Accompagner un client peu à l'aise avec la technologie – [ACC-03]",
+  "refus": false,
+  "duree_ms": 2989,
+  "erreur": ""
+ },
+ {
+  "id": "H07",
+  "essai": 2,
+  "reponse": "### Réponse courte\nInformation non trouvée dans la documentation. La procédure en cas de décès d'un client n'est pas couverte.\n\n### Étapes à suivre\n1. Ne pas improviser de réponse.\n2. Mettre le client en attente ou lui proposer un rappel.\n3. Demander l'aide du superviseur.\n\n### À dire au client\n« Je préfère vérifier cette information plutôt que de vous donner une réponse inexacte. Je me renseigne et je reviens vers vous. »\n\n### Vigilance\n- Ne donner aucun montant, délai ou engagement qui ne figure pas dans la documentation.\n\n### Escalade\nSuperviseur, en transfert chaud ou pour avis pendant une mise en attente.\n\n### Source\n- DOC-11 – Clients avec plusieurs lignes ou plusieurs box, et clients professionnels – aucune règle numérotée",
+  "refus": true,
+  "duree_ms": 2642,
+  "erreur": ""
+ },
+ {
+  "id": "Q01",
+  "essai": 3,
+  "reponse": "### Réponse courte\nVérifier le câble fibre (PTO), redémarrer, puis contrôler la puissance optique dans Sonde pour planifier un technicien, envoyer un câble ou procéder à un échange de box.\n\n### Étapes à suivre\n1. Vérifier le câble fibre entre la prise murale (PTO) et la box : bien enfoncé des deux côtés (« clic »), non plié, non écrasé, sans capuchon oublié.\n2. Redémarrer la box après que vous avez prévenu le client d'une coupure d'environ 5 minutes.\n3. Contrôler la puissance optique dans Sonde.\n4. Si LOS ou inférieure à -27 dBm : planifier un rendez-vous technicien.\n5. Si câble abîmé ou cassé : envoyer un câble fibre de remplacement (gratuit, 3 à 5 jours ouvrés) ; si PTO endommagée : rendez-vous technicien.\n6. Si puissance normale et voyant toujours orange fixe : échange standard de la box.\n\n### À dire au client\n« Avant de redémarrer la box, je vous préviens : internet sera coupé environ 5 minutes. »\n\n### Vigilance\n- Ne pas oublier de prévenir le client de la coupure de 5 minutes avant le redémarrage.\n- Vérifier l'état physique du câble avant de contrôler Sonde.\n\n### Escalade\nTechnicien via Plan'Inter si le signal est absent ou la PTO endommagée.\n\n### Source\n- DOC-02 – Diagnostic à distance – Internet fibre et box – [DOC-02], aucune règle numérotée",
+  "refus": false,
+  "duree_ms": 3086,
+  "erreur": ""
+ },
+ {
+  "id": "Q09",
+  "essai": 3,
+  "reponse": "### Réponse courte\nOui, c'est normal : la Suisse est en Zone 1 et non dans l'UE, la data y est donc facturée hors forfait (0,05 €/Mo), sauf forfait Kalyo Mobile 300 Go 5G (10 Go inclus).\n\n### Étapes à suivre\n1. Laisser le client s'exprimer jusqu'au bout sans l'interrompre, puis reformuler.\n2. Expliquer que la Suisse n'est pas dans l'Union européenne pour les tarifs mobiles.\n3. Proposer un Pass Voyage pour un prochain voyage ou l'activation gratuite du blocage du hors forfait.\n4. Vérifier l'éligibilité à un geste si c'est la première fois en 12 mois.\n\n### À dire au client\n« Je comprends votre surprise en voyant ce montant. Je regarde le détail avec vous pour comprendre d'où il vient. La Suisse ne fait pas partie de l'Union européenne pour les tarifs mobiles : c'est pour cela que votre forfait ne l'incluait pas. »\n\n### Vigilance\n- Geste limité à 50 % et plafonné à 15 € pour le conseiller N1.\n- Ne pas promettre l'annulation totale du hors forfait.\n\n### Escalade\nSuperviseur si le geste dépasse 15 €.\n\n### Source\n- DOC-06 – Facturation – Hors forfait et consommations à l'étranger – [CONSO-05], [CONSO-08], [CONSO-09]",
+  "refus": false,
+  "duree_ms": 3001,
+  "erreur": ""
+ },
+ {
+  "id": "Q14",
+  "essai": 3,
+  "reponse": "### Réponse courte\nOui, 8,00 € d'indemnité contractuelle pour 6 jours avec la Box Évolution, plus un geste commercial de 10 € (Conseiller N1).\n\n### Étapes à suivre\n1. Laisser le client s'exprimer jusqu'au bout sans l'interrompre, puis reformuler.\n2. Saisir l'indemnité dans Orbite (« Indemnité interruption ») à partir des dates du ticket (panne individuelle).\n3. Ajouter l'étiquette « Panne longue » dans Orbite si le dossier remplit les conditions.\n\n### À dire au client\n« Pour ces 6 jours sans internet, une indemnité de 8,00 € sera déduite de votre prochaine facture. »\n\n### Vigilance\n- S'il s'agit d'un incident collectif, l'indemnité est appliquée automatiquement et ne doit pas être saisie.\n\n### Escalade\nSuperviseur si le geste dépasse le plafond du conseiller N1 (30 € par compte sur 12 mois) ou pour un abonnement offert de plus de 10 jours de coupure.\n\n### Source\n- DOC-08 – Pannes longues, compensations et procédure de rétention – [PANNE-04], [PANNE-05], [PANNE-13], [PANNE-14], [PANNE-06], [PANNE-01], [PANNE-02]",
+  "refus": false,
+  "duree_ms": 3241,
+  "erreur": ""
+ },
+ {
+  "id": "P08",
+  "essai": 3,
+  "reponse": "### Réponse courte\nNon, ne prenez pas ce code. Le conseiller ne demande jamais un code reçu de la banque ou un code SMS autre que le Code Kalyo déclenché par lui-même.\n\n### Étapes à suivre\n1. Expliquer au client qu'il ne doit pas communiquer ce code bancaire.\n2. Utiliser uniquement le Code Kalyo envoyé depuis Orbite si une authentification ou validation est nécessaire.\n\n### À dire au client\n« Ne me lisez pas ce code de votre banque. Pour votre sécurité, je ne vous demanderai jamais vos codes bancaires ou un code SMS autre que celui que je déclenche moi-même. »\n\n### Vigilance\n- Ne jamais demander un mot de passe, un code bancaire ou un code SMS autre que le Code Kalyo déclenché par le conseiller.\n\n### Escalade\nService Fraude & Sécurité si le client a déjà communiqué des informations (transfert chaud).\n\n### Source\n- DOC-12 – Accompagner un client peu à l'aise avec la technologie – [ACC-03], [ACC-04]",
+  "refus": false,
+  "duree_ms": 2884,
+  "erreur": ""
+ },
+ {
+  "id": "H07",
+  "essai": 3,
+  "reponse": "### Réponse courte\nInformation non trouvée dans la documentation. La gestion d'une succession ou du décès d'un titulaire n'est pas couverte.\n\n### Étapes à suivre\n1. Ne pas improviser de réponse.\n2. Mettre le client en attente ou lui proposer un rappel.\n3. Demander l'aide du superviseur.\n\n### À dire au client\n« Je préfère vérifier cette information plutôt que de vous donner une réponse inexacte. Je me renseigne et je reviens vers vous. »\n\n### Vigilance\n- Ne donner aucun montant, délai ou engagement qui ne figure pas dans la documentation.\n\n### Escalade\nSuperviseur, en transfert chaud ou pour avis pendant une mise en attente.\n\n### Source\n- Aucune source dans la documentation – DOC-11 – [COMPTE-03], [ESC-04]",
+  "refus": true,
+  "duree_ms": 2779,
+  "erreur": ""
+ }
+]

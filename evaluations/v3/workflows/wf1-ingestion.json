@@ -1,0 +1,381 @@
+{
+  "name": "Kalyo – 1 Ingestion",
+  "nodes": [
+    {
+      "id": "acb11f25-b132-40cd-bdea-615983a4a273",
+      "name": "Lancer l'ingestion",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "721c3196-8e22-44f3-a2ea-9fa546758895",
+      "name": "Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        300
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "64fa7b63-eaac-4f01-a010-7606ad23956a",
+              "name": "docs_glob",
+              "value": "C:/chemin/vers/assistant-conseiller/docs/*.md",
+              "type": "string"
+            },
+            {
+              "id": "56e74449-e64d-4e53-b197-112592912bf0",
+              "name": "taille_lot",
+              "value": 50,
+              "type": "number"
+            },
+            {
+              "id": "93af7f43-19e4-4e79-85df-3bf901bdf580",
+              "name": "pause_embeddings_secondes",
+              "value": 20,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "7bee1ce4-5ea5-4b6e-bcd3-f26412c4ce2d",
+      "name": "Vider la table",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        440,
+        300
+      ],
+      "parameters": {
+        "operation": "delete",
+        "tableId": "documents",
+        "filterType": "string",
+        "filterString": "id=gt.0"
+      },
+      "alwaysOutputData": true,
+      "notes": "Reconstruction complète à chaque exécution : aucune duplication possible."
+    },
+    {
+      "id": "24ae9700-e916-4bcf-98a3-09f95465de51",
+      "name": "Lire les fichiers",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        660,
+        300
+      ],
+      "parameters": {
+        "operation": "read",
+        "fileSelector": "={{ $('Config').first().json.docs_glob }}",
+        "options": {}
+      },
+      "executeOnce": true
+    },
+    {
+      "id": "f65d45fe-4258-42e8-9623-e83cdbebe3b6",
+      "name": "Extraire le texte",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        880,
+        300
+      ],
+      "parameters": {
+        "operation": "text",
+        "binaryPropertyName": "data",
+        "destinationKey": "data",
+        "options": {}
+      }
+    },
+    {
+      "id": "e235fcc8-f33b-4693-9a69-260f2cf4aaf6",
+      "name": "Découper en passages",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        300
+      ],
+      "parameters": {
+        "jsCode": "// Découpage des documents Markdown Kalyo en passages pour le RAG.\n// Utilisé tel quel dans le nœud Code de WF1 (mode \"Run Once for All Items\").\n// Entrée : un item par fichier, avec le texte brut dans json.data.\n// Sortie : un item par passage : content (texte embarqué) + métadonnées.\n\nconst TAILLE_MAX = 1500; // caractères par passage (hors en-tête de contexte)\n\nfunction lireEnTete(texte) {\n  const m = texte.match(/^---\\r?\\n([\\s\\S]*?)\\r?\\n---\\r?\\n/);\n  const meta = {};\n  if (!m) return { meta, corps: texte };\n  for (const ligne of m[1].split(/\\r?\\n/)) {\n    const i = ligne.indexOf(':');\n    if (i > 0) meta[ligne.slice(0, i).trim()] = ligne.slice(i + 1).trim();\n  }\n  return { meta, corps: texte.slice(m[0].length) };\n}\n\nfunction estTableau(bloc) {\n  return bloc.trim().startsWith('|');\n}\n\n// Découpe un bloc de texte trop long en morceaux, sans couper un tableau\n// sans répéter son en-tête.\nfunction decouperBlocs(texte) {\n  const blocs = texte.split(/\\n\\s*\\n/).map(b => b.trim()).filter(Boolean);\n  const morceaux = [];\n  let courant = '';\n  const pousser = () => { if (courant.trim()) morceaux.push(courant.trim()); courant = ''; };\n\n  for (const bloc of blocs) {\n    if (bloc.length > TAILLE_MAX && estTableau(bloc)) {\n      // Un court texte juste avant le tableau (ex. \"**[ESC-02]**\") est répété\n      // en tête de chaque morceau, pour que la règle reste rattachée au tableau.\n      const prefixe = courant.length < 200 ? courant : '';\n      if (prefixe) courant = ''; else pousser();\n      const lignes = bloc.split('\\n');\n      const entete = (prefixe ? prefixe + '\\n\\n' : '') + lignes.slice(0, 2).join('\\n');\n      let part = entete;\n      for (const l of lignes.slice(2)) {\n        if ((part + '\\n' + l).length > TAILLE_MAX && part !== entete) {\n          morceaux.push(part);\n          part = entete;\n        }\n        part += '\\n' + l;\n      }\n      if (part !== entete) morceaux.push(part);\n      continue;\n    }\n    if (courant && (courant + '\\n\\n' + bloc).length > TAILLE_MAX) pousser();\n    courant += (courant ? '\\n\\n' : '') + bloc;\n  }\n  pousser();\n  return morceaux;\n}\n\nfunction reglesDefinies(texte) {\n  // Seules les règles définies ici (en gras) comptent, pas les simples renvois.\n  const ids = [...texte.matchAll(/\\*\\*\\[([A-Z]+-\\d+)\\]/g)].map(m => m[1]);\n  return [...new Set(ids)];\n}\n\nfunction decouperDocument(texte) {\n  const { meta, corps } = lireEnTete(texte.replace(/\\r\\n/g, '\\n'));\n  const docId = meta.id || 'DOC-??';\n  const titre = meta.titre || '';\n  const passages = [];\n\n  // Sections de niveau 2 (## ...). Le texte avant le premier ## devient \"Présentation\".\n  const parties = corps.split(/\\n(?=## )/);\n  for (const partie of parties) {\n    let titreH2 = 'Présentation';\n    let contenu = partie;\n    if (partie.startsWith('## ')) {\n      const fin = partie.indexOf('\\n');\n      titreH2 = partie.slice(3, fin === -1 ? undefined : fin).trim();\n      contenu = fin === -1 ? '' : partie.slice(fin + 1);\n    } else {\n      contenu = contenu.replace(/^# .*\\n/, ''); // retire le titre H1\n    }\n    if (/^Documents liés/i.test(titreH2)) continue; // simple navigation\n\n    // Sous-sections ### éventuelles\n    const sous = contenu.split(/\\n(?=### )/);\n    for (const s of sous) {\n      let section = titreH2;\n      let texteSection = s;\n      if (s.startsWith('### ')) {\n        const fin = s.indexOf('\\n');\n        section = titreH2 + ' > ' + s.slice(4, fin === -1 ? undefined : fin).trim();\n        texteSection = fin === -1 ? '' : s.slice(fin + 1);\n      }\n      if (!texteSection.trim()) continue;\n      const morceaux = decouperBlocs(texteSection);\n      morceaux.forEach((m, i) => {\n        const label = morceaux.length > 1 ? `${section} (partie ${i + 1}/${morceaux.length})` : section;\n        passages.push({\n          content: `[${docId} | ${titre} | ${label}]\\n\\n${m}`,\n          doc_id: docId,\n          titre,\n          domaine: meta.domaine || '',\n          section: label,\n          regles: reglesDefinies(m).join(', '),\n          version: meta.version || '',\n        });\n      });\n    }\n  }\n  return passages;\n}\n\n// --- Point d'entrée n8n ---\nconst sortie = [];\nfor (const item of $input.all()) {\n  for (const p of decouperDocument(item.json.data || '')) sortie.push({ json: p });\n}\nreturn sortie;\n"
+      }
+    },
+    {
+      "id": "1753e88b-82b6-424a-913e-e7107499e387",
+      "name": "Lots de passages",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1320,
+        300
+      ],
+      "parameters": {
+        "batchSize": "={{ $('Config').first().json.taille_lot }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "03ad5e3c-ffb0-4c3e-b190-0678d51d63f0",
+      "name": "Préparer la requête",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        400
+      ],
+      "parameters": {
+        "jsCode": "// Prépare UNE requête batchEmbedContents pour tout le lot (au lieu d'une requête par passage).\nconst passages = $input.all().map(i => i.json);\nreturn [{ json: {\n  passages,\n  body: {\n    requests: passages.map(p => ({\n      model: 'models/gemini-embedding-001',\n      taskType: 'RETRIEVAL_DOCUMENT',\n      content: { parts: [{ text: p.content }] },\n    })),\n  },\n} }];"
+      }
+    },
+    {
+      "id": "93da30b3-aea8-41a9-89e0-13df602b3c4c",
+      "name": "Embeddings Gemini (lot)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1760,
+        400
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googlePalmApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body) }}",
+        "options": {}
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "notes": "Appel direct à l'API (1 requête par lot). Nouvelle tentative sans risque : aucune écriture."
+    },
+    {
+      "id": "7966a889-08f2-4492-80f8-8eca677bfc64",
+      "name": "Associer les vecteurs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1980,
+        400
+      ],
+      "parameters": {
+        "jsCode": "// Associe chaque passage à son vecteur. Un vecteur absent ou vide arrête le workflow\n// avec un message clair, au lieu d'être inséré en silence.\nconst lot = $('Préparer la requête').first().json.passages;\nconst emb = $input.first().json.embeddings || [];\nif (emb.length !== lot.length) {\n  throw new Error(`Embeddings reçus : ${emb.length}, attendus : ${lot.length}. Réponse : ${JSON.stringify($input.first().json).slice(0, 300)}`);\n}\nreturn lot.map((p, i) => {\n  const v = (emb[i] && emb[i].values) || [];\n  if (!v.length) throw new Error(`Vecteur vide pour ${p.doc_id} – ${p.section}`);\n  return { json: {\n    content: p.content,\n    metadata: { doc_id: p.doc_id, titre: p.titre, domaine: p.domaine, section: p.section, regles: p.regles, version: p.version },\n    embedding: JSON.stringify(v), // format texte pgvector : [0.1,0.2,...]\n  } };\n});"
+      }
+    },
+    {
+      "id": "5239c2c7-62b7-499a-9f7b-ebf534b309e9",
+      "name": "Insérer dans Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        2200,
+        400
+      ],
+      "parameters": {
+        "operation": "create",
+        "tableId": "documents",
+        "dataToSend": "autoMapInputData",
+        "inputsToIgnore": ""
+      }
+    },
+    {
+      "id": "e60c8d62-fed8-464f-bb27-bbe929da6454",
+      "name": "Pause quota embeddings",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2420,
+        400
+      ],
+      "parameters": {
+        "amount": "={{ $('Config').first().json.pause_embeddings_secondes }}",
+        "unit": "seconds"
+      },
+      "webhookId": "340deb1e-4da3-4cdb-bfd6-a07765266035"
+    },
+    {
+      "id": "d1638bc5-33e5-400b-b3e9-551b2b999ce8",
+      "name": "Bilan",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        140
+      ],
+      "parameters": {
+        "jsCode": "// Nombre de passages insérés (attendu : 191).\nreturn [{ json: { passages_inseres: $input.all().length } }];"
+      }
+    },
+    {
+      "id": "c8fd5b8c-d956-4295-a4ae-f713463ce7e2",
+      "name": "Note ingestion",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -60
+      ],
+      "parameters": {
+        "content": "## WF1 – Ingestion\nLit `docs/*.md`, découpe par titres Markdown (191 passages), calcule les embeddings Gemini par lots (appel direct `batchEmbedContents`) et reconstruit la table `documents`.\n\n**À relancer après chaque modification de la documentation.**\n\nCredentials : Supabase API, Google Gemini (PaLM) API.",
+        "width": 560,
+        "height": 240
+      }
+    }
+  ],
+  "connections": {
+    "Lancer l'ingestion": {
+      "main": [
+        [
+          {
+            "node": "Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config": {
+      "main": [
+        [
+          {
+            "node": "Vider la table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vider la table": {
+      "main": [
+        [
+          {
+            "node": "Lire les fichiers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lire les fichiers": {
+      "main": [
+        [
+          {
+            "node": "Extraire le texte",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraire le texte": {
+      "main": [
+        [
+          {
+            "node": "Découper en passages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Découper en passages": {
+      "main": [
+        [
+          {
+            "node": "Lots de passages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lots de passages": {
+      "main": [
+        [
+          {
+            "node": "Bilan",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Préparer la requête",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer la requête": {
+      "main": [
+        [
+          {
+            "node": "Embeddings Gemini (lot)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Gemini (lot)": {
+      "main": [
+        [
+          {
+            "node": "Associer les vecteurs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Associer les vecteurs": {
+      "main": [
+        [
+          {
+            "node": "Insérer dans Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insérer dans Supabase": {
+      "main": [
+        [
+          {
+            "node": "Pause quota embeddings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pause quota embeddings": {
+      "main": [
+        [
+          {
+            "node": "Lots de passages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
