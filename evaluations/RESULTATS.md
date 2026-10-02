@@ -127,7 +127,7 @@ Dans les 3 versions, la plupart des échecs restants concernent l'escalade : esc
 - **Compromis** : la consigne « laisser le client s'exprimer d'abord » n'est pas en production. Elle atteignait 9 conflits sur 9 en v2, v3 et v4, mais s'appliquait aussi à 9 questions hors conflit. C'est la prochaine amélioration à traiter, par un déclenchement plus ciblé.
 - **Relecture humaine** : 10 réponses de cette version, avec des cas limites, ont été relues par un expert métier (section 9).
 
-## 9. Relecture par un expert métier (5 ans en centre d'appels)
+## 9. Relecture par un expert métier (ancien qualiticien en conformité d'appels)
 
 10 réponses de la version en production (passe v1-a), anonymisées et mélangées, notées avec la même grille que le juge, sans voir ses notes. Grille : [`relecture/grille.csv`](relecture/grille.csv) ; notes du juge : [`relecture/notes-juge.md`](relecture/notes-juge.md) ; calcul : `scripts/comparer-humain-juge.js`.
 

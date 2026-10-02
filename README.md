@@ -2,7 +2,7 @@
 
 Console en démo hors ligne, sans installation : 6 vraies réponses de Souffleur, chacune suivie de la version corrigée par un expert métier.
 
-> **In English** – *Souffleur* is a retrieval-augmented assistant for call-center agents, built with n8n, Supabase (pgvector) and Gemini. During a call, the agent types the customer's question and gets, in about 3 seconds, a structured answer drawn only from internal documentation: short answer, steps, a ready-to-say sentence, pitfalls, escalation and sources. When the documentation does not cover a question, it says so and escalates instead of guessing. Four prompt versions were compared on 43 test questions plus 10 unseen ones, with code-based checks, an LLM judge from another model family and a review by a former call-center agent. The company and its documentation are fictional. [Try the demo](https://mohamedjanna01-rgb.github.io/souffleur/ui/index.html?demo=1).
+> **In English** – *Souffleur* is a retrieval-augmented assistant for call-center agents, built with n8n, Supabase (pgvector) and Gemini. During a call, the agent types the customer's question and gets, in about 3 seconds, a structured answer drawn only from internal documentation: short answer, steps, a ready-to-say sentence, pitfalls, escalation and sources. When the documentation does not cover a question, it says so and escalates instead of guessing. Four prompt versions were compared on 43 test questions plus 10 unseen ones, with code-based checks, an LLM judge from another model family and a review by a former call-compliance quality analyst. The company and its documentation are fictional. [Try the demo](https://mohamedjanna01-rgb.github.io/souffleur/ui/index.html?demo=1).
 
 # Souffleur
 
@@ -18,7 +18,7 @@ Console en démo hors ligne, sans installation : 6 vraies réponses de Souffleur
 
 Un conseiller de centre d'appels répond à des dizaines de situations différentes dans la journée : panne de box, facture contestée, consommation à l'étranger, colis perdu, client qui veut résilier. La réponse existe presque toujours quelque part dans la documentation interne, mais **pas pendant que le client attend au bout du fil**. Il faut alors choisir entre mettre le client en attente, demander à un collègue, ou répondre de mémoire au risque de promettre un geste, un délai ou un remboursement qui n'existe pas.
 
-Ce projet a été conçu par un ancien conseiller client et téléconseiller (5 ans en centre d'appels, chez un opérateur télécom). C'est l'outil qu'il aurait voulu avoir en ligne.
+Pendant 5 ans en centre de relation client, j'ai été téléconseiller, conseiller client, puis qualiticien en conformité d'appels. Souffleur est l'outil que j'aurais voulu avoir en ligne.
 
 ## La solution
 
@@ -72,7 +72,7 @@ Mesurée 2 fois sur 43 questions (25 standards, 10 pièges, 8 hors documentation
 
 ### Relecture par un expert métier
 
-10 réponses de la version en production, dont des cas limites, ont été relues par l'auteur, ancien conseiller, avec la même grille que le juge et sans voir ses notes :
+10 réponses de la version en production, dont des cas limites, ont été relues par l'auteur, ancien qualiticien en conformité d'appels, habitué à évaluer des appels avec une grille. Il a utilisé la même grille que le juge, sans voir ses notes :
 
 | Mesure | Résultat |
 |---|---|
@@ -81,7 +81,7 @@ Mesurée 2 fois sur 43 questions (25 standards, 10 pièges, 8 hors documentation
 | Réponses utilisables **telles quelles** en appel | 1 / 10 (8 avec retouches, 1 non utilisable) |
 | Escalade jugée correcte | 9 / 10 |
 
-Le juge est un bon filtre, jamais à plus d'un point de l'expert, mais il ne voit pas l'essentiel du terrain : **la phrase « À dire au client » est souvent générique**. Exemples : aucune condoléance pour un client décédé, « ferry ou avion » pour un client revenu de croisière. Détails : [evaluations/RESULTATS.md](evaluations/RESULTATS.md#9-relecture-par-un-expert-métier-5-ans-en-centre-dappels).
+Le juge est un bon filtre, jamais à plus d'un point de l'expert, mais il ne voit pas l'essentiel du terrain : **la phrase « À dire au client » est souvent générique**. Exemples : aucune condoléance pour un client décédé, « ferry ou avion » pour un client revenu de croisière. Détails : [evaluations/RESULTATS.md](evaluations/RESULTATS.md#9-relecture-par-un-expert-métier-ancien-qualiticien-en-conformité-dappels).
 
 Dans la démo, **Souffleur propose, l'expert métier ajuste** : chaque réponse enregistrée est suivie de la version corrigée par l'expert, de ce qu'il a ajouté et de son commentaire, la réponse originale restant affichée telle quelle ([versions corrigées](evaluations/relecture/versions-corrigees.md)).
 

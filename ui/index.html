@@ -143,7 +143,7 @@ button, textarea, input { font: inherit; color: inherit; }
 .expert-tete { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 .expert-tete h2 { margin: 0; font-size: 16px; font-weight: 600; }
 .expert blockquote { margin: 0; font: 400 21px/1.5 var(--serif); }
-.expert .copier { border: 1px solid var(--ligne-forte); color: var(--texte); background: var(--fond); }
+.expert .copier { border: 1px solid var(--ligne-forte); color: var(--texte); background: var(--fond); flex-shrink: 0; white-space: nowrap; }
 .expert .copier[data-copie="true"] { background: var(--texte); color: var(--surface); border-color: var(--texte); }
 .expert-ajout { margin: 14px 0 0; }
 .expert-ajout strong, .expert-note strong { font-weight: 600; }
@@ -432,7 +432,7 @@ function afficher(d, { temps, enregistre } = {}) {
   // Démo : version corrigée par l'expert métier, sous la réponse originale (non modifiée)
   if (enregistre && d.relecture) {
     const r = d.relecture, x = d.expert || {};
-    const tete = cree("div", { className: "expert-tete" }, [cree("h2", { textContent: "Version corrigée par l'expert métier" })]);
+    const tete = cree("div", { className: "expert-tete" }, [cree("h2", { textContent: "Version corrigée par l'expert métier (ancien qualiticien)" })]);
     const contenu = [tete];
     if (x.aucune_correction) {
       contenu.push(cree("p", { className: "expert-aucune", textContent: "Aucune correction : la phrase de Souffleur est utilisable telle quelle." }));
@@ -446,7 +446,7 @@ function afficher(d, { temps, enregistre } = {}) {
     contenu.push(cree("div", { className: "expert-pied" }, [
       cree("p", {}, ["Note de l'expert sur la réponse de Souffleur : ", cree("strong", { textContent: `${r.note}, ${r.usage}` }), "."]),
       cree("p", {}, ["Commentaire : ", r.commentaire])]));
-    blocs.push(cree("section", { className: "expert", ariaLabel: "Version corrigée par l'expert métier" }, contenu));
+    blocs.push(cree("section", { className: "expert", ariaLabel: "Version corrigée par l'expert métier (ancien qualiticien)" }, contenu));
   }
 
   // 6. Détails (repliés)

@@ -1,6 +1,6 @@
 # Relecture humaine : 10 réponses de l'assistant
 
-Objectif : comparer le jugement d'un expert métier (5 ans de terrain) à celui du juge automatique (Gemma).
+Objectif : comparer le jugement d'un expert métier (5 ans en centre de relation client : téléconseiller, conseiller client, puis qualiticien en conformité d'appels) à celui du juge automatique (Gemma).
 
 - Les réponses viennent de la version déployée en production (prompt v1 + post-traitement par code), passe d'évaluation v1-a.
 - Elles sont **anonymisées et mélangées**. Les notes du juge sont dans [`notes-juge.md`](notes-juge.md) : **ne l'ouvrir qu'après avoir noté les 10 réponses**.

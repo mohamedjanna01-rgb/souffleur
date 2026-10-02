@@ -1,6 +1,6 @@
 # Versions corrigées par l'expert métier
 
-Phrases « À dire au client » retouchées par l'auteur (ancien conseiller) pour les 6 réponses de la démo. Les réponses originales de Souffleur ne sont pas modifiées : elles sont affichées au-dessus de chaque correction dans la console (`ui/index.html?demo=1`). Les références R01 à R10 sont celles de [`relecture.md`](relecture.md).
+Phrases « À dire au client » retouchées par l'auteur (ancien qualiticien en conformité d'appels) pour les 6 réponses de la démo. Les réponses originales de Souffleur ne sont pas modifiées : elles sont affichées au-dessus de chaque correction dans la console (`ui/index.html?demo=1`). Les références R01 à R10 sont celles de [`relecture.md`](relecture.md).
 
 ## R01 – Client très énervé
 
