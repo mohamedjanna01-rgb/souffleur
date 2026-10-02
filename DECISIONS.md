@@ -227,8 +227,14 @@ Des pièges réalistes ont été placés dans la base pour que les évaluations 
 
 ### D34. Démo publiée sur GitHub Pages
 - **Choix** : la console est servie par GitHub Pages depuis la branche `main`. La démo est accessible à https://mohamedjanna01-rgb.github.io/souffleur/ui/index.html?demo=1. Un `index.html` à la racine redirige vers cette adresse (redirection HTML et JavaScript, avec un lien de secours), pour que https://mohamedjanna01-rgb.github.io/souffleur/ fonctionne aussi.
-- **Aucune tentative de connexion depuis la version en ligne** : une page servie en HTTPS ne peut pas joindre un service local en HTTP. Dans ce cas, la console reste en démo et l'explique (« Version en ligne : la connexion à n8n n'est possible qu'en local »), sans envoyer de requête.
+- **Aucune tentative de connexion depuis la version en ligne** : une page servie en HTTPS ne peut pas joindre un service local en HTTP. Dans ce cas, la console reste en démo sans envoyer de requête, et le bouton « Réessayer la connexion », inutilisable, est masqué.
 - **Vérifié par un test instrumenté** (appels réseau comptés sur une copie de la page) : en mode démo, après clic sur les exemples, ouverture de la liste et question libre, **0 requête** ; en HTTPS simulé sans `?demo=1`, après une question et un clic sur « Réessayer la connexion », **0 requête**, et la console reste en démo.
+
+### D35. Démo : « Souffleur propose, l'expert métier ajuste »
+- **Choix** : sous chaque réponse enregistrée de la démo, un encadré « Version corrigée par l'expert métier » affiche la phrase client retouchée par l'expert, une ligne « Ce qui a été ajouté », sa note et son commentaire, en clair (et non plus dans « Détails »). La réponse originale de Souffleur reste affichée au-dessus, **sans modification**.
+- **Pourquoi** : la relecture (D31) montre que seule 1 réponse sur 10 est utilisable telle quelle ; la démo doit montrer honnêtement ce que l'IA fait seule et ce que l'expertise métier apporte (alternative au lieu d'un refus sec, condoléances, vérification avant d'affirmer).
+- **Contenu** : 6 réponses (R01, R02, R03, R07, R08 corrigées ; R05 sans correction). Le nom du service cité dans la correction R07, « Service Kalyo Pro », a été vérifié dans la documentation. Corrections archivées dans `evaluations/relecture/versions-corrigees.md`.
+- Bandeau : « Démo hors ligne – réponses enregistrées. Souffleur propose, l'expert métier ajuste. »
 
 ---
 

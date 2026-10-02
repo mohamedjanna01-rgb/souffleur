@@ -1,6 +1,6 @@
 ### [Essayer la démo](https://mohamedjanna01-rgb.github.io/souffleur/ui/index.html?demo=1)
 
-Console en démo hors ligne, sans installation : 6 vraies réponses de Souffleur, relues par un expert métier.
+Console en démo hors ligne, sans installation : 6 vraies réponses de Souffleur, chacune suivie de la version corrigée par un expert métier.
 
 > **In English** – *Souffleur* is a retrieval-augmented assistant for call-center agents, built with n8n, Supabase (pgvector) and Gemini. During a call, the agent types the customer's question and gets, in about 3 seconds, a structured answer drawn only from internal documentation: short answer, steps, a ready-to-say sentence, pitfalls, escalation and sources. When the documentation does not cover a question, it says so and escalates instead of guessing. Four prompt versions were compared on 43 test questions plus 10 unseen ones, with code-based checks, an LLM judge from another model family and a review by a former call-center agent. The company and its documentation are fictional. [Try the demo](https://mohamedjanna01-rgb.github.io/souffleur/ui/index.html?demo=1).
 
@@ -83,6 +83,10 @@ Mesurée 2 fois sur 43 questions (25 standards, 10 pièges, 8 hors documentation
 
 Le juge est un bon filtre, jamais à plus d'un point de l'expert, mais il ne voit pas l'essentiel du terrain : **la phrase « À dire au client » est souvent générique**. Exemples : aucune condoléance pour un client décédé, « ferry ou avion » pour un client revenu de croisière. Détails : [evaluations/RESULTATS.md](evaluations/RESULTATS.md#9-relecture-par-un-expert-métier-5-ans-en-centre-dappels).
 
+Dans la démo, **Souffleur propose, l'expert métier ajuste** : chaque réponse enregistrée est suivie de la version corrigée par l'expert, de ce qu'il a ajouté et de son commentaire, la réponse originale restant affichée telle quelle ([versions corrigées](evaluations/relecture/versions-corrigees.md)).
+
+![Démo hors ligne : réponse de Souffleur à une question sur le décès d'un client, suivie de la version corrigée par l'expert métier, qui ajoute les condoléances](ui/captures/console-demo-sombre.png)
+
 ### Pistes d'amélioration issues de la relecture métier
 
 1. Toujours proposer une **alternative** au lieu d'un simple non.
@@ -133,7 +137,7 @@ flowchart LR
 | **Interface** | Une page HTML sans framework ni compilation (mode clair et sombre, mobile, démo hors ligne) |
 | **Coût** | 0 € (offres gratuites Gemini et Supabase) |
 
-Détails : [ARCHITECTURE.md](ARCHITECTURE.md) · Journal des 34 décisions techniques : [DECISIONS.md](DECISIONS.md)
+Détails : [ARCHITECTURE.md](ARCHITECTURE.md) · Journal des 35 décisions techniques : [DECISIONS.md](DECISIONS.md)
 
 ### Lancer le projet
 
